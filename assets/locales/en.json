@@ -1,3 +1,11 @@
 {
-    "app_name" : "Orders App"
-}
+    "app_name" : "Orders App",
+    "kaba_delivery" : "Kaba Delivery",
+    "create_account" : "Create Account",
+    "have_to_know_your_info" : "We have to know your contact information in order to communicate with you",
+    "phone_number" : "Phone number",
+    "sign_up" : "Sign Up",
+    "email" : "Email",
+    "first_name" : "First Name",
+    "last_name" : "Last Name"
+} 

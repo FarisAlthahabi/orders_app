@@ -1,3 +1,11 @@
 {
-    "app_name" : "تطبيق طلبات"
+    "app_name" : "تطبيق طلبات",
+    "kaba_delivery" : "Kaba Delivery",
+    "create_account" : " إنشاء حساب",
+    "have_to_know_your_info" : "علينا معرفة بيانات التواصل خاصتك من أجل التواصل معك",
+    "phone_number" : "رقم الجوال",
+    "sign_up" : "إنشاء حساب",
+    "email" : "البريد الالكتروني",
+    "first_name" : "الاسم الأول",
+    "last_name" : "الاسم الأخير"
 }

@@ -11,6 +11,7 @@
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:orders_app/global/di/modules/app_module.dart' as _i212;
+import 'package:orders_app/global/dio/dio_client.dart' as _i945;
 import 'package:orders_app/global/repos/user_repo.dart' as _i614;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -26,6 +27,7 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final appModule = _$AppModule();
     gh.singletonAsync<bool>(() => appModule.disablePrintOnRelease());
+    gh.singleton<_i945.DioClient>(() => _i945.DioClient());
     gh.singleton<_i614.UserRepo>(() => _i614.UserRepo());
     return this;
   }
