@@ -6,6 +6,17 @@
     "phone_number" : "Phone number",
     "sign_up" : "Sign Up",
     "email" : "Email",
+    "password" : "Password",
+    "confirm_password" : "Confirm Password",
     "first_name" : "First Name",
-    "last_name" : "Last Name"
+    "last_name" : "Last Name",
+    "hello" : "Hello",
+    "choose_and_select" : "Choose a store and select a product",
+    "geolocation" : "Geolocation",
+    "creatr_address" : "Create and save your address for accurate delivery",
+    "payment_method" : "Payment method",
+    "pay_by_net_or_when_arrive" : "Choose to pay by internet or after arriving then approve your order",
+    "relax" : "Relax",
+    "our_delivery_do" : "Our delivery service will do the rest. Now, enjoy!",
+    "next" : "Next"
 } 

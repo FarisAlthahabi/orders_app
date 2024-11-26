@@ -29,7 +29,7 @@ class _SpashPageState extends State<SpashPage> with PostFrameMixin {
       Duration(seconds: 2),
       () {
         if (mounted) {
-          context.router.push(SignUpRoute());
+          context.router.push(IntroRoute());
         }
       },
     );

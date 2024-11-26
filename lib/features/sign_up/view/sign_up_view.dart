@@ -1,17 +1,27 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/widgets/main_button.dart';
 import 'package:orders_app/global/widgets/main_text_field.dart';
 
 abstract class SignUpViewCallBacks {
-  void onFirstNameChanged(String firstName);
+  void onPasswordChanged(String password);
 
-  void onLastNameChanged(String lastName);
-  
+  void onPasswordSubmitted(String password);
+
+  void onConfirmPasswordChanged(String confirmPassword);
+
+  void onConfirmPasswordSubmitted(String confirmPassword);
+
   void onEmailChanged(String email);
-  
+
+  void onEmailSubmitted(String email);
+
   void onPhoneNumberChanged(String phoneNumber);
+
+  void onPhoneNumberSubmitted(String phoneNumber);
 
   void onSignUpTap();
 }
@@ -35,17 +45,42 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage>
     implements SignUpViewCallBacks {
-      @override
-  void onFirstNameChanged(String firstName) {
-    // TODO: implement onFirstNameChanged
-  }
-  
+  final emailFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
+  final confirmPasswordFocusNode = FocusNode();
+  final phoneNumberFocusNode = FocusNode();
+
   @override
-  void onLastNameChanged(String lastName) {
-    // TODO: implement onLastNameChanged
+  void onConfirmPasswordSubmitted(String confirmPassword) {
+    phoneNumberFocusNode.requestFocus();
   }
 
-      @override
+  @override
+  void onEmailSubmitted(String email) {
+    passwordFocusNode.requestFocus();
+  }
+
+  @override
+  void onPasswordSubmitted(String password) {
+    confirmPasswordFocusNode.requestFocus();
+  }
+
+  @override
+  void onPhoneNumberSubmitted(String phoneNumber) {
+    phoneNumberFocusNode.unfocus();
+  }
+
+  @override
+  void onConfirmPasswordChanged(String confirmPassword) {
+    // TODO: implement onConfirmPasswordChanged
+  }
+
+  @override
+  void onPasswordChanged(String password) {
+    // TODO: implement onPasswordChanged
+  }
+
+  @override
   void onEmailChanged(String email) {
     // TODO: implement onEmailChanged
   }
@@ -84,7 +119,7 @@ class _SignUpPageState extends State<SignUpPage>
                 Text(
                   "have_to_know_your_info".tr(),
                   style: TextStyle(
-                    color: Color(0xFF8E8EA9),
+                    color: AppColors.grey,
                     fontSize: 24,
                     fontWeight: FontWeight.w500,
                     height: 1.24,
@@ -93,25 +128,36 @@ class _SignUpPageState extends State<SignUpPage>
                 ),
                 SizedBox(height: 30),
                 MainTextField(
-                  onChanged: onFirstNameChanged,
-                  hintText: "first_name".tr(),
-                ),
-                SizedBox(height: 20),
-                MainTextField(
-                  onChanged: onLastNameChanged,
-                  hintText: "last_name".tr(),
-                ),
-                SizedBox(height: 20),
-                MainTextField(
                   onChanged: onEmailChanged,
+                  onSubmitted: onEmailSubmitted,
+                  focusNode: emailFocusNode,
                   hintText: "email".tr(),
                   textInputType: TextInputType.emailAddress,
                 ),
                 SizedBox(height: 20),
                 MainTextField(
+                  onChanged: onPasswordChanged,
+                  onSubmitted: onPasswordSubmitted,
+                  focusNode: passwordFocusNode,
+                  hintText: "password".tr(),
+                  textInputType: TextInputType.visiblePassword,
+                ),
+                SizedBox(height: 20),
+                MainTextField(
+                  onChanged: onConfirmPasswordChanged,
+                  onSubmitted: onConfirmPasswordSubmitted,
+                  focusNode: confirmPasswordFocusNode,
+                  hintText: "confirm_password".tr(),
+                  textInputType: TextInputType.visiblePassword,
+                ),
+                SizedBox(height: 20),
+                MainTextField(
                   onChanged: onPhoneNumberChanged,
+                  onSubmitted: onPhoneNumberSubmitted,
+                  focusNode: phoneNumberFocusNode,
                   hintText: "phone_number".tr(),
                   textInputType: TextInputType.number,
+                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 ),
                 SizedBox(height: 200),
                 MainButton(

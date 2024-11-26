@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:orders_app/global/theme/components/colors.dart';
 
 class MainButton extends StatefulWidget {
   const MainButton({
@@ -31,7 +32,7 @@ class _MainButtonState extends State<MainButton> {
         width: double.maxFinite,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: widget.buttonColor ?? Color(0xFFCC1F45),
+          color: widget.buttonColor ?? AppColors.mainColor,
           borderRadius: BorderRadius.circular(16)
         ),
         child: Center(
