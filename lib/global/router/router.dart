@@ -11,17 +11,20 @@ class AppRouter extends RootStackRouter {
         CustomRoute(
           page: SplashRoute.page,
           initial: true,
-          // children: [
-          //   AutoRoute(
-          //     page: SignUpRoute.page,
-          //   ),
-          // ],
         ),
+        AutoRoute(page: IntroRoute.page),
+        AutoRoute(page: SignUpRoute.page),
         AutoRoute(
-              page: IntroRoute.page,
+          page: DashboardRoute.page,
+          children: [
+            AutoRoute(
+              initial: true,
+              page: HomeRoute.page,
             ),
-             AutoRoute(
-              page: SignUpRoute.page,
-            ),
+            AutoRoute(page: CartRoute.page),
+            AutoRoute(page: FavoriteRoute.page),
+            AutoRoute(page: ProfileRoute.page)
+          ],
+        ),
       ];
 }

@@ -29,6 +29,9 @@ class _MainButtonState extends State<MainButton> {
       duration: widget.duration ?? Duration(microseconds: 200),
       onPressed: widget.onPressed,
       child: Container(
+        constraints: BoxConstraints(
+          maxHeight: 70
+        ),
         width: double.maxFinite,
         padding: EdgeInsets.all(20),
         decoration: BoxDecoration(
@@ -41,7 +44,7 @@ class _MainButtonState extends State<MainButton> {
             style: TextStyle(
               color: widget.textColor ?? Colors.white,
               height: 1.19,
-              fontSize: 16,
+              fontSize: 20,
               fontWeight: FontWeight.w500,
             ),
           ),

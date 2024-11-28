@@ -2,8 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/intro/view/intro_view_item.dart';
 import 'package:orders_app/global/gen/assets.gen.dart';
+import 'package:orders_app/global/repos/user_repo.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
@@ -31,11 +33,13 @@ class IntroPage extends StatefulWidget {
 }
 
 class _IntroPageState extends State<IntroPage> implements IntroViewCallBacks {
+  late final UserRepo userRepo = context.read();
   final controller = PageController(keepPage: true);
 
   @override
   void onPressed() {
     if (controller.page == 3) {
+      userRepo.setKey("is_first_time", false);
       context.router.push(SignUpRoute());
     } else {
       controller.nextPage(

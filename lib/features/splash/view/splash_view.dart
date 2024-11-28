@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/global/gen/assets.gen.dart';
 import 'package:orders_app/global/mixins/post_frame_mixin.dart';
+import 'package:orders_app/global/repos/user_repo.dart';
 import 'package:orders_app/global/router/router.gr.dart';
+import 'package:orders_app/global/utils/constants.dart';
 
 @RoutePage()
 class SplashView extends StatelessWidget {
@@ -23,13 +26,21 @@ class SpashPage extends StatefulWidget {
 }
 
 class _SpashPageState extends State<SpashPage> with PostFrameMixin {
+  late final UserRepo userRepo = context.read();
+  
   @override
   void onPostFrame() {
     Future.delayed(
-      Duration(seconds: 2),
-      () {
-        if (mounted) {
-          context.router.push(IntroRoute());
+      AppConstants.duration1s,
+      () async {
+        if (await userRepo.getKey("is_first_time", defaultValue: true)) {
+          if (mounted) {
+            context.router.push(IntroRoute());
+          }
+        } else {
+          if (mounted) {
+            context.router.push(SignUpRoute());
+          }
         }
       },
     );

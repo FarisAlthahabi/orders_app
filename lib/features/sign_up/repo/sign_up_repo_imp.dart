@@ -7,7 +7,20 @@ class SignUpRepoImp implements SignUpRepo {
   Future<void> signUp() async {
     try {
       //TODO : implement this
-      final response =await dioClient.get("endpoint");
+      final response = await dioClient.post(
+        "endpoint",
+        data: {},
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> signIn() async {
+    try {
+      //TODO : implement this
+      final response = await dioClient.get("endpoint");
     } catch (e) {
       rethrow;
     }
