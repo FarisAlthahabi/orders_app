@@ -119,7 +119,7 @@ class _SignUpPageState extends State<SignUpPage>
         child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: AppConstants.padding16,
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,

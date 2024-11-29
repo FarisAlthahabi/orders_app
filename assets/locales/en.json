@@ -25,5 +25,10 @@
     "home" : "Home",
     "profile" : "Profile",
     "cart" : "Cart",
-    "favorite" : "Favorite"
+    "favorite" : "Favorite",
+    "settings" : "Settings",
+    "logout" : "Logout",
+    "location" : "Location",
+    "apply" : "Apply",
+    "cancel" : "Cancel"
 } 

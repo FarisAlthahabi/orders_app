@@ -26,6 +26,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: automaticallyImplyLeading,
+      iconTheme: IconThemeData(size: 40),
       leading: leading,
       leadingWidth: leadingWidth,
       title: title,

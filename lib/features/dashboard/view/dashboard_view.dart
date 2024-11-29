@@ -1,9 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:orders_app/features/dashboard/model/drawer_tile_enum.dart';
 import 'package:orders_app/features/dashboard/model/navigation_bar_enum.dart';
+import 'package:orders_app/global/gen/assets.gen.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
+import 'package:orders_app/global/utils/constants.dart';
 import 'package:orders_app/global/widgets/main_app_bar.dart';
 
 abstract class DashboardViewCallBacks {
@@ -54,12 +57,70 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      drawer: Drawer(
-        
-        child: DrawerHeader(
-          child: Container(
-            color: Colors.red,
-          )),
+      drawer: SafeArea(
+        child: Drawer(
+          child: Column(
+            children: [
+              SizedBox(
+                height: 180,
+                width: double.maxFinite,
+                child: DrawerHeader(
+                  padding: AppConstants.padding0,
+                  decoration: BoxDecoration(
+                    color: AppColors.mainColor,
+                  ),
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Assets.images.logo.svg(),
+                      Padding(
+                        padding: AppConstants.paddingT120,
+                        child: Text(
+                          "kaba_delivery".tr(),
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w500,
+                            height: 1.24,
+                            color: AppColors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 25),
+              Column(
+                children: DrawerTileEnum.values.map(
+                  (e) {
+                    return Padding(
+                      padding: AppConstants.padding2,
+                      child: ListTile(
+                        titleAlignment: ListTileTitleAlignment.center,
+                        horizontalTitleGap: 20,
+                        leading: Icon(
+                          e.icon,
+                          color: e.color,
+                          size: 25,
+                        ),
+                        title: Text(
+                          e.displayName,
+                          style: TextStyle(
+                            color: e.color,
+                            fontSize: 20,
+                            fontWeight: e == DrawerTileEnum.logout
+                                ? FontWeight.w600
+                                : FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ).toList(),
+              ),
+            ],
+          ),
+        ),
       ),
       appBarBuilder: (context, tabsRouter) {
         return MainAppBar();
@@ -81,14 +142,10 @@ class _DashboardPageState extends State<DashboardPage>
           currentIndex: tabsRouter.activeIndex,
           onTap: (index) => onBottomTab(index, tabsRouter),
           showUnselectedLabels: true,
-          selectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w600 ,
-            height: 1.8
-          ),
-          unselectedLabelStyle: TextStyle(
-            fontWeight: FontWeight.w600 ,
-            height: 1.8
-          ),
+          selectedLabelStyle:
+              TextStyle(fontWeight: FontWeight.w600, height: 1.8),
+          unselectedLabelStyle:
+              TextStyle(fontWeight: FontWeight.w600, height: 1.8),
           showSelectedLabels: true,
           iconSize: 40,
           items: NavigationBarEnum.values
@@ -100,9 +157,7 @@ class _DashboardPageState extends State<DashboardPage>
                         ? AppColors.mainColor
                         : AppColors.black,
                   ),
-
                   label: e.displayName(),
-
                 ),
               )
               .toList(),
