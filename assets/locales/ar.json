@@ -30,5 +30,20 @@
     "logout" : "تسجيل الخروج",
     "location" : "الموقع",
     "apply" : "تطبيق",
-    "cancel" : "إلغاء"
+    "cancel" : "إلغاء",
+    "search" : "..ابحث",
+    "gallery" : "المعرض",
+    "camera" : "الكاميرا",
+    "available_stores" : "المتاجر المتوفرة",
+    "choose_image_source" : "اختر مصدر الصورة",
+    "select_your_role" : "اختر ما هو دورك",
+    "customer" : "زبون",
+    "driver" : "سائق",
+    "available_products" : "المنتجات المتوفرة",
+    "available" : "المتوفرة",
+    "sp" : "ل.س",
+    "product_options" : "خيارات المنتج",
+    "mark_as_favorite" : "إضافة إلى المفضلة",
+    "collect_products" : "جمع منتجات",
+    "order" : "طلب"
 }

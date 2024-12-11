@@ -35,11 +35,11 @@ class _SpashPageState extends State<SpashPage> with PostFrameMixin {
       () async {
         if (await userRepo.getKey("is_first_time", defaultValue: true)) {
           if (mounted) {
-            context.router.push(IntroRoute());
+            context.router.popAndPush(IntroRoute());
           }
         } else {
           if (mounted) {
-            context.router.push(SignUpRoute());
+            context.router.popAndPush(SignUpRoute());
           }
         }
       },

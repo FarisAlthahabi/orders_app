@@ -19,9 +19,13 @@ abstract class SignUpViewCallBacks {
 
   void onConfirmPasswordSubmitted(String confirmPassword);
 
-  void onEmailChanged(String email);
+  void onFirstNameChanged(String firstName);
 
-  void onEmailSubmitted(String email);
+  void onFirstNameSubmitted(String firstName);
+
+  void onLastNameChanged(String lastName);
+
+  void onLastNameSubmitted(String lastName);
 
   void onPhoneNumberChanged(String phoneNumber);
 
@@ -51,31 +55,58 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage>
     implements SignUpViewCallBacks {
-  final emailFocusNode = FocusNode();
+  final firstNameFocusNode = FocusNode();
+  final lastNameFocusNode = FocusNode();
+  final phoneNumberFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
   final confirmPasswordFocusNode = FocusNode();
-  final phoneNumberFocusNode = FocusNode();
 
   bool showSignInOrUp = true;
 
   @override
-  void onConfirmPasswordSubmitted(String confirmPassword) {
+  void dispose() {
+    firstNameFocusNode.dispose();
+    lastNameFocusNode.dispose();
+    phoneNumberFocusNode.dispose();
+    passwordFocusNode.dispose();
+    confirmPasswordFocusNode.dispose();
+    
+    super.dispose();
+  }
+
+  @override
+  void onFirstNameChanged(String firstName) {
+    // TODO: implement onFirstNameChanged
+  }
+
+  @override
+  void onFirstNameSubmitted(String firstName) {
+    lastNameFocusNode.requestFocus();
+  }
+
+  @override
+  void onLastNameChanged(String lastName) {
+    // TODO: implement onLastNameChanged
+  }
+
+  @override
+  void onLastNameSubmitted(String lastName) {
     phoneNumberFocusNode.requestFocus();
   }
 
   @override
-  void onEmailSubmitted(String email) {
-    passwordFocusNode.requestFocus();
+  void onConfirmPasswordSubmitted(String confirmPassword) {
+    confirmPasswordFocusNode.unfocus();
   }
 
   @override
   void onPasswordSubmitted(String password) {
-    confirmPasswordFocusNode.requestFocus();
+    passwordFocusNode.unfocus();
   }
 
   @override
   void onPhoneNumberSubmitted(String phoneNumber) {
-    phoneNumberFocusNode.unfocus();
+    passwordFocusNode.requestFocus();
   }
 
   @override
@@ -89,11 +120,6 @@ class _SignUpPageState extends State<SignUpPage>
   }
 
   @override
-  void onEmailChanged(String email) {
-    // TODO: implement onEmailChanged
-  }
-
-  @override
   void onPhoneNumberChanged(String phoneNumber) {
     // TODO: implement onPhoneNumberChanged
   }
@@ -101,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage>
   @override
   void onSignUpOrInTap() {
     if (showSignInOrUp) {
-      context.router.push(DashboardRoute());
+      context.router.popAndPush(AppManagerRoute());
     }
   }
 
@@ -110,6 +136,11 @@ class _SignUpPageState extends State<SignUpPage>
     setState(() {
       showSignInOrUp = !showSignInOrUp;
     });
+    firstNameFocusNode.unfocus();
+    lastNameFocusNode.unfocus();
+    phoneNumberFocusNode.unfocus();
+    passwordFocusNode.unfocus();
+    confirmPasswordFocusNode.unfocus();
   }
 
   @override
@@ -153,12 +184,37 @@ class _SignUpPageState extends State<SignUpPage>
                       ),
                     ),
                     SizedBox(height: 30),
+                    AnimatedSizeAndFade.showHide(
+                      show: !showSignInOrUp,
+                      child: Column(
+                        children: [
+                          MainTextField(
+                            onChanged: onFirstNameChanged,
+                            onSubmitted: onFirstNameSubmitted,
+                            focusNode: firstNameFocusNode,
+                            hintText: "first_name".tr(),
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                          SizedBox(height: 20),
+                          MainTextField(
+                            onChanged: onLastNameChanged,
+                            onSubmitted: onLastNameSubmitted,
+                            focusNode: lastNameFocusNode,
+                            hintText: "last_name".tr(),
+                            prefixIcon: Icon(Icons.person),
+                          ),
+                          SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
                     MainTextField(
-                      onChanged: onEmailChanged,
-                      onSubmitted: onEmailSubmitted,
-                      focusNode: emailFocusNode,
-                      hintText: "email".tr(),
-                      textInputType: TextInputType.emailAddress,
+                      onChanged: onPhoneNumberChanged,
+                      onSubmitted: onPhoneNumberSubmitted,
+                      focusNode: phoneNumberFocusNode,
+                      hintText: "phone_number".tr(),
+                      textInputType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                      prefixIcon: Icon(Icons.phone),
                     ),
                     SizedBox(height: 20),
                     MainTextField(
@@ -167,6 +223,8 @@ class _SignUpPageState extends State<SignUpPage>
                       focusNode: passwordFocusNode,
                       hintText: "password".tr(),
                       textInputType: TextInputType.visiblePassword,
+                      prefixIcon: Icon(Icons.lock),
+                      isPassword: true,
                     ),
                     SizedBox(height: 20),
                     AnimatedSizeAndFade.showHide(
@@ -179,21 +237,10 @@ class _SignUpPageState extends State<SignUpPage>
                             focusNode: confirmPasswordFocusNode,
                             hintText: "confirm_password".tr(),
                             textInputType: TextInputType.visiblePassword,
+                            prefixIcon: Icon(Icons.lock),
+                            isPassword: true,
                           ),
                           SizedBox(height: 20),
-                        ],
-                      ),
-                    ),
-                    AnimatedSizeAndFade.showHide(
-                      show: !showSignInOrUp,
-                      child: MainTextField(
-                        onChanged: onPhoneNumberChanged,
-                        onSubmitted: onPhoneNumberSubmitted,
-                        focusNode: phoneNumberFocusNode,
-                        hintText: "phone_number".tr(),
-                        textInputType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
                         ],
                       ),
                     ),

@@ -12,18 +12,32 @@ class AppRouter extends RootStackRouter {
           page: SplashRoute.page,
           initial: true,
         ),
-        AutoRoute(page: IntroRoute.page),
-        AutoRoute(page: SignUpRoute.page),
         AutoRoute(
-          page: DashboardRoute.page,
+          page: IntroRouter.page,
+          children: [
+            AutoRoute(page: IntroRoute.page),
+            AutoRoute(page: SelectRoleRoute.page),
+          ],
+        ),
+        AutoRoute(page: SignUpRoute.page),
+        AdaptiveRoute(
+          page: AppManagerRoute.page,
           children: [
             AutoRoute(
               initial: true,
-              page: HomeRoute.page,
+              page: DashboardRoute.page,
+              children: [
+                AutoRoute(
+                  initial: true,
+                  page: HomeRoute.page,
+                ),
+                AutoRoute(page: CartRoute.page),
+                AutoRoute(page: FavoriteRoute.page),
+                AutoRoute(page: ProfileRoute.page)
+              ],
             ),
-            AutoRoute(page: CartRoute.page),
-            AutoRoute(page: FavoriteRoute.page),
-            AutoRoute(page: ProfileRoute.page)
+            AutoRoute(page: ProductsRoute.page),
+            AutoRoute(page: SettingsRoute.page)
           ],
         ),
       ];

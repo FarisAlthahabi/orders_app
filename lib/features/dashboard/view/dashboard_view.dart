@@ -95,22 +95,25 @@ class _DashboardPageState extends State<DashboardPage>
                   (e) {
                     return Padding(
                       padding: AppConstants.padding2,
-                      child: ListTile(
-                        titleAlignment: ListTileTitleAlignment.center,
-                        horizontalTitleGap: 20,
-                        leading: Icon(
-                          e.icon,
-                          color: e.color,
-                          size: 25,
-                        ),
-                        title: Text(
-                          e.displayName,
-                          style: TextStyle(
+                      child: InkWell(
+                        onTap: e.action(context),
+                        child: ListTile(
+                          titleAlignment: ListTileTitleAlignment.center,
+                          horizontalTitleGap: 20,
+                          leading: Icon(
+                            e.icon,
                             color: e.color,
-                            fontSize: 20,
-                            fontWeight: e == DrawerTileEnum.logout
-                                ? FontWeight.w600
-                                : FontWeight.w500,
+                            size: 25,
+                          ),
+                          title: Text(
+                            e.displayName,
+                            style: TextStyle(
+                              color: e.color,
+                              fontSize: 20,
+                              fontWeight: e == DrawerTileEnum.logout
+                                  ? FontWeight.w600
+                                  : FontWeight.w500,
+                            ),
                           ),
                         ),
                       ),
@@ -133,7 +136,7 @@ class _DashboardPageState extends State<DashboardPage>
       ],
       bottomNavigationBuilder: (context, tabsRouter) {
         return BottomNavigationBar(
-          backgroundColor: Color(0XFFF5F6F7),
+          backgroundColor: AppColors.whiteShade,
           type: BottomNavigationBarType.fixed,
           selectedFontSize: 16,
           unselectedFontSize: 16,

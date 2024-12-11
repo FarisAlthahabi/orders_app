@@ -15,6 +15,9 @@ import 'package:vector_graphics/vector_graphics.dart' as _vg;
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add.svg
+  SvgGenImage get add => const SvgGenImage('assets/images/add.svg');
+
   /// File path: assets/images/introFirst.png
   AssetGenImage get introFirst =>
       const AssetGenImage('assets/images/introFirst.png');
@@ -34,9 +37,24 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/images/logo.svg');
 
+  /// File path: assets/images/minus.svg
+  SvgGenImage get minus => const SvgGenImage('assets/images/minus.svg');
+
+  /// File path: assets/images/selectRole.png
+  AssetGenImage get selectRole =>
+      const AssetGenImage('assets/images/selectRole.png');
+
   /// List of all assets
-  List<dynamic> get values =>
-      [introFirst, introFourth, introSecond, introThird, logo];
+  List<dynamic> get values => [
+        add,
+        introFirst,
+        introFourth,
+        introSecond,
+        introThird,
+        logo,
+        minus,
+        selectRole
+      ];
 }
 
 class $AssetsLocalesGen {

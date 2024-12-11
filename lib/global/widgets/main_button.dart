@@ -14,6 +14,11 @@ class MainButton extends StatefulWidget {
     this.width,
     this.border,
     this.height,
+    this.fontSize,
+    this.shadow,
+    this.fontWeight,
+    this.borderRadius,
+    this.padding,
   });
 
   final VoidCallback onPressed;
@@ -24,6 +29,11 @@ class MainButton extends StatefulWidget {
   final double? width;
   final double? height;
   final BoxBorder? border;
+  final double? fontSize;
+  final List<BoxShadow>? shadow;
+  final FontWeight? fontWeight;
+  final BorderRadius? borderRadius;
+  final EdgeInsets? padding;
 
   @override
   State<MainButton> createState() => _MainButtonState();
@@ -39,11 +49,12 @@ class _MainButtonState extends State<MainButton> {
         constraints: BoxConstraints(maxHeight: 70),
         height: widget.height,
         width: widget.width ?? double.maxFinite,
-        padding: AppConstants.padding20,
+        padding: widget.padding ?? AppConstants.padding20,
         decoration: BoxDecoration(
           border: widget.border,
           color: widget.buttonColor ?? AppColors.mainColor,
-          borderRadius: AppConstants.borderRadius16,
+          borderRadius: widget.borderRadius ?? AppConstants.borderRadius16,
+          boxShadow: widget.shadow,
         ),
         child: Center(
           child: Text(
@@ -51,8 +62,8 @@ class _MainButtonState extends State<MainButton> {
             style: TextStyle(
               color: widget.textColor ?? AppColors.white,
               height: 1.19,
-              fontSize: 20,
-              fontWeight: FontWeight.w500,
+              fontSize: widget.fontSize ?? 20,
+              fontWeight: widget.fontWeight ?? FontWeight.w500,
             ),
           ),
         ),

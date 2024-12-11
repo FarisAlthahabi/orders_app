@@ -30,5 +30,20 @@
     "logout" : "Logout",
     "location" : "Location",
     "apply" : "Apply",
-    "cancel" : "Cancel"
+    "cancel" : "Cancel",
+    "search" : "Search..",
+    "gallery" : "Gallery",
+    "camera" : "Camera",
+    "available_stores" : "Available Stores",
+    "choose_image_source" : "Choose Image Source",
+    "select_your_role" : "Select your role",
+    "customer" : "Customer",
+    "driver" : "Driver",
+    "available_products" : "Available Products",
+    "available" : "Available",
+    "sp" : "SP",
+    "product_options" : "Product Options",
+    "mark_as_favorite" : "Mark As Favorite",
+    "collect_products" : "Collect Products",
+    "order" : "Order"
 } 

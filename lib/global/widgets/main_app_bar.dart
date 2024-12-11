@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orders_app/global/theme/components/colors.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   const MainAppBar({
@@ -31,7 +32,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: leadingWidth,
       title: title,
       actions: actions,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? AppColors.whiteShade,
       centerTitle: centerTitle,
     );
   }

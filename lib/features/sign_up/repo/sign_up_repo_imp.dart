@@ -4,12 +4,12 @@ part of 'sign_up_repo.dart';
 class SignUpRepoImp implements SignUpRepo {
   final dioClient = DioClient();
   @override
-  Future<void> signUp() async {
+  Future<void> signUp(SignUpModel signUpModel) async {
     try {
       //TODO : implement this
       final response = await dioClient.post(
         "endpoint",
-        data: {},
+        data: signUpModel.toJson() ,
       );
     } catch (e) {
       rethrow;
