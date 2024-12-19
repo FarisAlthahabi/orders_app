@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/app_manager/cubit/app_manager_cubit.dart';
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart';
-import 'package:orders_app/features/products/view/products_view.dart';
 import 'package:orders_app/global/di/di.dart';
 import 'package:orders_app/global/utils/constants.dart';
+import 'package:orders_app/global/widgets/product_tile.dart';
 
 @RoutePage()
 class FavoriteView extends StatelessWidget {

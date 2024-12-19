@@ -20,4 +20,5 @@ abstract class AppColors {
   static const whiteShade = Color(0XFFF5F6F7);
   static const whiteShade2 = Color(0XFFEAEAEF);
   static const orange = Color(0xFFFF7B2C);
+  static const green = Colors.green;
 }

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:orders_app/global/di/di.dart';
 import 'package:orders_app/global/dio/exceptions.dart';
 import 'package:orders_app/global/repos/user_repo.dart';
@@ -14,7 +14,14 @@ class AppInterceptor extends Interceptor {
     options.headers['Accept'] = 'application/json';
 
     final userRepo = get<UserRepo>();
-    String? token = await userRepo.getKey('auth_token');
+    String? token;
+    try {
+      token = await userRepo.getKey(UserRepo.keys.token);
+    } on Exception catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
 
     if (token != null) {
       options.headers['Authorization'] = 'Bearer $token';

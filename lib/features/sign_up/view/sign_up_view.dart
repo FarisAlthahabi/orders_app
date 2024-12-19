@@ -3,11 +3,17 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:orders_app/features/sign_up/cubit/sign_up_cubit.dart';
+import 'package:orders_app/global/di/di.dart';
+import 'package:orders_app/global/repos/user_repo.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
+import 'package:orders_app/global/widgets/loading_indicator.dart';
 import 'package:orders_app/global/widgets/main_button.dart';
+import 'package:orders_app/global/widgets/main_snack_bar.dart';
 import 'package:orders_app/global/widgets/main_text_field.dart';
 
 abstract class SignUpViewCallBacks {
@@ -42,7 +48,10 @@ class SignUpView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const SignUpPage();
+    return BlocProvider(
+      create: (context) => get<SignUpCubit>(),
+      child: SignUpPage(),
+    );
   }
 }
 
@@ -55,6 +64,9 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage>
     implements SignUpViewCallBacks {
+  late final SignUpCubit signUpCubit = context.read();
+  late final UserRepo userRepo = context.read();
+
   final firstNameFocusNode = FocusNode();
   final lastNameFocusNode = FocusNode();
   final phoneNumberFocusNode = FocusNode();
@@ -70,13 +82,13 @@ class _SignUpPageState extends State<SignUpPage>
     phoneNumberFocusNode.dispose();
     passwordFocusNode.dispose();
     confirmPasswordFocusNode.dispose();
-    
+
     super.dispose();
   }
 
   @override
   void onFirstNameChanged(String firstName) {
-    // TODO: implement onFirstNameChanged
+    signUpCubit.setFirstName(firstName);
   }
 
   @override
@@ -86,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage>
 
   @override
   void onLastNameChanged(String lastName) {
-    // TODO: implement onLastNameChanged
+    signUpCubit.setLastName(lastName);
   }
 
   @override
@@ -111,23 +123,25 @@ class _SignUpPageState extends State<SignUpPage>
 
   @override
   void onConfirmPasswordChanged(String confirmPassword) {
-    // TODO: implement onConfirmPasswordChanged
+    signUpCubit.setConfirmPassword(confirmPassword);
   }
 
   @override
   void onPasswordChanged(String password) {
-    // TODO: implement onPasswordChanged
+    signUpCubit.setPassword(password);
   }
 
   @override
   void onPhoneNumberChanged(String phoneNumber) {
-    // TODO: implement onPhoneNumberChanged
+    signUpCubit.setPhoneNumber(phoneNumber);
   }
 
   @override
   void onSignUpOrInTap() {
     if (showSignInOrUp) {
-      context.router.popAndPush(AppManagerRoute());
+      signUpCubit.signIn();
+    } else {
+      signUpCubit.signUp();
     }
   }
 
@@ -285,9 +299,46 @@ class _SignUpPageState extends State<SignUpPage>
                       ),
                     ),
                     SizedBox(height: 20),
-                    MainButton(
-                      onPressed: onSignUpOrInTap,
-                      text: showSignInOrUp ? "sign_in".tr() : "sign_up".tr(),
+                    BlocConsumer<SignUpCubit, GeneralSignUpState>(
+                      listener: (context, state) {
+                        if (state is SignUpSuccess) {
+                          userRepo.setKey(UserRepo.keys.isLoggedIn, true);
+
+                          MainSnackBar.showSuccessMessage(
+                            context,
+                            state.message,
+                          );
+                          context.router.popAndPush(AppManagerRoute());
+
+                        } else if (state is SignInSuccess) {
+                          userRepo.setKey(UserRepo.keys.isLoggedIn, true);
+                          MainSnackBar.showSuccessMessage(
+                            context,
+                            state.message,
+                          );
+                          context.router.push(AppManagerRoute());
+
+                        } else if (state is SignUpFail) {
+                          MainSnackBar.showErrorMessage(
+                            context,
+                            state.message,
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        var onTap = onSignUpOrInTap;
+                        Widget? child;
+                        if (state is SignUpLoading) {
+                          onTap = () {};
+                          child = LoadingIndicator();
+                        }
+                        return MainButton(
+                          onPressed: onTap,
+                          text:
+                              showSignInOrUp ? "sign_in".tr() : "sign_up".tr(),
+                          child: child,
+                        );
+                      },
                     ),
                   ],
                 ),

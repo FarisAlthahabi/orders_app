@@ -19,6 +19,7 @@ class MainButton extends StatefulWidget {
     this.fontWeight,
     this.borderRadius,
     this.padding,
+    this.child,
   });
 
   final VoidCallback onPressed;
@@ -34,6 +35,7 @@ class MainButton extends StatefulWidget {
   final FontWeight? fontWeight;
   final BorderRadius? borderRadius;
   final EdgeInsets? padding;
+  final Widget? child;
 
   @override
   State<MainButton> createState() => _MainButtonState();
@@ -56,7 +58,7 @@ class _MainButtonState extends State<MainButton> {
           borderRadius: widget.borderRadius ?? AppConstants.borderRadius16,
           boxShadow: widget.shadow,
         ),
-        child: Center(
+        child: widget.child ?? Center(
           child: Text(
             widget.text,
             style: TextStyle(

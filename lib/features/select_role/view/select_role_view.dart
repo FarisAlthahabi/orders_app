@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:orders_app/features/select_role/model/user_role_enum/user_role_enum.dart';
 import 'package:orders_app/global/gen/assets.gen.dart';
 import 'package:orders_app/global/repos/user_repo.dart';
 import 'package:orders_app/global/router/router.gr.dart';
@@ -11,7 +12,7 @@ import 'package:orders_app/global/utils/constants.dart';
 import 'package:orders_app/global/widgets/main_button.dart';
 
 abstract class SelectRoleViewCallBacks {
-  void onPressed();
+  void onPressed(UserRoleEnum userRole);
 }
 
 @RoutePage()
@@ -35,8 +36,9 @@ class _SelectRolePageState extends State<SelectRolePage>
     implements SelectRoleViewCallBacks {
   late final UserRepo userRepo = context.read();
   @override
-  void onPressed() {
-    userRepo.setKey("is_first_time", false);
+  void onPressed(UserRoleEnum userRole) {
+    userRepo.setKey(UserRepo.keys.isFirstTime, false);
+    userRepo.setKey(UserRepo.keys.userRole, userRole.name);
     context.router.popAndPush(SignUpRoute());
   }
 
@@ -60,33 +62,30 @@ class _SelectRolePageState extends State<SelectRolePage>
                 ),
               ),
               SizedBox(height: 25),
-              Image.asset(Assets.images.selectRole.path, scale: 0.7,),
+              Image.asset(
+                Assets.images.selectRole.path,
+                scale: 0.7,
+              ),
               // Spacer(),
-              MainButton(
-                onPressed: onPressed,
-                text: "customer".tr(),
-                buttonColor: AppColors.white,
-                textColor: AppColors.black,
-                border: Border.all(width: 1.3, color: AppColors.mainColor),
-                borderRadius: AppConstants.borderRadius32,
-                shadow: AppShadows.shadow1,
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
+              ...UserRoleEnum.values.map(
+                (role) => Column(
+                  children: [
+                    MainButton(
+                      onPressed: () => onPressed(role),
+                      text: role.displayName,
+                      buttonColor: AppColors.white,
+                      textColor: AppColors.black,
+                      border:
+                          Border.all(width: 1.3, color: AppColors.mainColor),
+                      borderRadius: AppConstants.borderRadius32,
+                      shadow: AppShadows.shadow1,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    SizedBox(height: 25),
+                  ],
+                ),
               ),
-              SizedBox(height: 30),
-              MainButton(
-                onPressed: onPressed,
-                text: "driver".tr(),
-                buttonColor: AppColors.white,
-                textColor: AppColors.black,
-                border: Border.all(width: 1.3, color: AppColors.mainColor),
-                borderRadius: AppConstants.borderRadius32,
-                shadow: AppShadows.shadow1,
-                fontSize: 25,
-                fontWeight: FontWeight.w700,
-              ),
-             // Spacer(),
-              SizedBox(height: 40),
             ],
           ),
         ),

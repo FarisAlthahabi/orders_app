@@ -7,7 +7,7 @@ import 'package:orders_app/global/dio/app_interceptor.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 //TODO : fill this 
-const baseUrl = 'http://127.0.0.1:8000/';
+const baseUrl = 'http://10.0.2.2:8000/';
 const apiUrl = '${baseUrl}api/';
 
 @singleton

@@ -45,5 +45,8 @@
     "product_options" : "Product Options",
     "mark_as_favorite" : "Mark As Favorite",
     "collect_products" : "Collect Products",
-    "order" : "Order"
+    "order" : "Order",
+    "logout_successfully" : "Logged out Successfully",
+    "signup_successfully" : "Sign up Successfully",
+    "login_successfully" : "Logged in Successfully"
 } 

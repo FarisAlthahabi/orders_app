@@ -45,5 +45,8 @@
     "product_options" : "خيارات المنتج",
     "mark_as_favorite" : "إضافة إلى المفضلة",
     "collect_products" : "جمع منتجات",
-    "order" : "طلب"
+    "order" : "طلب",
+    "logout_successfully" : "تم تسجيل الخروج بنجاح",
+    "signup_successfully" : "تم إنشاء الحساب بنجاح",
+    "login_successfully" : "تم تسجيل الدخول بنجاح"
 }

@@ -10,11 +10,12 @@ class UserRepo {
 
   UserRepo._() : properties = <String, dynamic>{};
 
+  static const UserKeys keys = UserKeys();
+
   @factoryMethod
   static final UserRepo _instance = UserRepo._();
 
   Map<String, dynamic> properties;
-
 
   Future<bool> setKey<T>(String key, T value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -79,4 +80,14 @@ class UserRepo {
   }
 }
 
-//const String firstTimeKey = 'FIRST_TIME_KEY';
+class UserKeys {
+  const UserKeys();
+
+  String get isFirstTime => "is_first_time";
+
+  String get isLoggedIn => "is_logged_in";
+
+  String get userRole => "user_role";
+
+  String get token => "token";
+}

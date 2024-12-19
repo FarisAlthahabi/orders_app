@@ -12,6 +12,8 @@ import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:orders_app/features/app_manager/cubit/app_manager_cubit.dart'
     as _i198;
+import 'package:orders_app/features/dashboard/cubit/dashboard_cubit.dart'
+    as _i318;
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart'
     as _i303;
 import 'package:orders_app/features/home/cubit/home_cubit.dart' as _i615;
@@ -42,6 +44,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i128.SignUpRepo>(() => _i128.SignUpRepoImp());
     gh.factory<_i80.SignUpCubit>(
         () => _i80.SignUpCubit(gh<_i128.SignUpRepo>()));
+    gh.factory<_i318.DashboardCubit>(
+        () => _i318.DashboardCubit(gh<_i128.SignUpRepo>()));
     return this;
   }
 }

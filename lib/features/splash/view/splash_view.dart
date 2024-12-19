@@ -27,19 +27,27 @@ class SpashPage extends StatefulWidget {
 
 class _SpashPageState extends State<SpashPage> with PostFrameMixin {
   late final UserRepo userRepo = context.read();
-  
+
   @override
   void onPostFrame() {
     Future.delayed(
       AppConstants.duration1s,
       () async {
-        if (await userRepo.getKey("is_first_time", defaultValue: true)) {
+        if (await userRepo.getKey(UserRepo.keys.isFirstTime,
+            defaultValue: true)) {
           if (mounted) {
             context.router.popAndPush(IntroRoute());
           }
         } else {
-          if (mounted) {
-            context.router.popAndPush(SignUpRoute());
+          if (await userRepo.getKey(UserRepo.keys.isLoggedIn,
+              defaultValue: false)) {
+            if (mounted) {
+              context.router.popAndPush(AppManagerRoute());
+            }
+          } else {
+            if (mounted) {
+              context.router.popAndPush(SignUpRoute());
+            }
           }
         }
       },

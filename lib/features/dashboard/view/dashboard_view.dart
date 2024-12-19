@@ -1,19 +1,27 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:orders_app/features/dashboard/cubit/dashboard_cubit.dart';
 import 'package:orders_app/features/dashboard/model/drawer_tile_enum.dart';
 import 'package:orders_app/features/dashboard/model/navigation_bar_enum.dart';
+import 'package:orders_app/global/di/di.dart';
 import 'package:orders_app/global/gen/assets.gen.dart';
+import 'package:orders_app/global/repos/user_repo.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
+import 'package:orders_app/global/widgets/loading_indicator.dart';
 import 'package:orders_app/global/widgets/main_app_bar.dart';
+import 'package:orders_app/global/widgets/main_snack_bar.dart';
 
 abstract class DashboardViewCallBacks {
   void onBottomTab(
     int currentIndex,
     TabsRouter tabsRouter,
   );
+
+  void logout();
 }
 
 @RoutePage()
@@ -22,7 +30,10 @@ class DashboardView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const DashboardPage();
+    return BlocProvider(
+      create: (context) => get<DashboardCubit>(),
+      child: const DashboardPage(),
+    );
   }
 }
 
@@ -35,6 +46,9 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage>
     implements DashboardViewCallBacks {
+  late final DashboardCubit dashboardCubit = context.read();
+  late final UserRepo userRepo = context.read();
+
   final tabTitles = [
     "home".tr(),
     "cart".tr(),
@@ -52,6 +66,11 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   void onBottomTab(int currentIndex, TabsRouter tabsRouter) {
     tabsRouter.setActiveIndex(currentIndex);
+  }
+
+  @override
+  void logout() {
+    dashboardCubit.logout();
   }
 
   @override
@@ -96,14 +115,57 @@ class _DashboardPageState extends State<DashboardPage>
                     return Padding(
                       padding: AppConstants.padding2,
                       child: InkWell(
-                        onTap: e.action(context),
+                        onTap: e == DrawerTileEnum.logout
+                            ? logout
+                            : e.action(context),
                         child: ListTile(
                           titleAlignment: ListTileTitleAlignment.center,
                           horizontalTitleGap: 20,
-                          leading: Icon(
-                            e.icon,
-                            color: e.color,
-                            size: 25,
+                          leading: BlocConsumer<DashboardCubit,
+                              GeneralDashboardState>(
+                            listenWhen: (previous, current) =>
+                                e == DrawerTileEnum.logout,
+                            listener: (context, state) {
+                              if (state is LogoutSuccess) {
+                                userRepo.setKey(
+                                    UserRepo.keys.isLoggedIn, false);
+
+                                context.maybePop();
+                                MainSnackBar.showSuccessMessage(
+                                  context,
+                                  state.message,
+                                );
+                                context.router.push(SignUpRoute());
+                              } else if (state is LogoutFail) {
+                                MainSnackBar.showErrorMessage(
+                                  context,
+                                  state.message,
+                                );
+                              }
+                            },
+                            builder: (context, state) {
+                              Widget widget = Icon(
+                                e.icon,
+                                color: e.color,
+                                size: 25,
+                              );
+                              if (state is LogoutLoading) {
+                                widget = LoadingIndicator(
+                                  width: 35,
+                                  height: 35,
+                                  color: AppColors.red,
+                                );
+                              }
+                              if (e != DrawerTileEnum.logout) {
+                                return Icon(
+                                  e.icon,
+                                  color: e.color,
+                                  size: 25,
+                                );
+                              } else {
+                                return widget;
+                              }
+                            },
                           ),
                           title: Text(
                             e.displayName,
