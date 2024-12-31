@@ -309,7 +309,6 @@ class _SignUpPageState extends State<SignUpPage>
                             state.message,
                           );
                           context.router.popAndPush(AppManagerRoute());
-
                         } else if (state is SignInSuccess) {
                           userRepo.setKey(UserRepo.keys.isLoggedIn, true);
                           MainSnackBar.showSuccessMessage(
@@ -317,7 +316,6 @@ class _SignUpPageState extends State<SignUpPage>
                             state.message,
                           );
                           context.router.push(AppManagerRoute());
-
                         } else if (state is SignUpFail) {
                           MainSnackBar.showErrorMessage(
                             context,
@@ -328,11 +326,14 @@ class _SignUpPageState extends State<SignUpPage>
                       builder: (context, state) {
                         var onTap = onSignUpOrInTap;
                         Widget? child;
+                        EdgeInsets? padding;
                         if (state is SignUpLoading) {
                           onTap = () {};
-                          child = LoadingIndicator();
+                          padding = AppConstants.padding8;
+                          child = LoadingIndicator(size: 60);
                         }
                         return MainButton(
+                          padding: padding,
                           onPressed: onTap,
                           text:
                               showSignInOrUp ? "sign_in".tr() : "sign_up".tr(),

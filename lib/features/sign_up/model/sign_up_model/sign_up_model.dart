@@ -51,26 +51,40 @@ class SignUpModel {
 
   @JsonKey(name: 'first_name')
   String get firstName {
-    return _firstName ?? (throw "First name can't be empty");
+    if (_firstName == null || _firstName.isEmpty) {
+      throw "First name can't be empty";
+    }
+    return _firstName;
   }
 
   @JsonKey(name: 'last_name')
   String get lastName {
-    return _lastName ?? (throw "Last name can't be empty");
+    if (_lastName == null || _lastName.isEmpty) {
+      throw "Last name can't be empty";
+    }
+    return _lastName;
   }
 
   @JsonKey(name: "phone")
   String get phoneNumber {
-    return _phoneNumber ?? (throw "Phone Number can't be empty");
+    if (_phoneNumber == null || _phoneNumber.isEmpty) {
+      throw "Phone Number can't be empty";
+    }
+    return _phoneNumber;
   }
 
   String get password {
-    return _password ?? (throw "Password can't be empty");
+    if (_password == null || _password.isEmpty) {
+      throw "Password can't be empty";
+    }
+    return _password;
   }
 
   @JsonKey(name: 'password_confirmation')
   String get confirmPassword {
-    return _confirmPassword ?? (throw "Confirm Password can't be empty");
+    if (_confirmPassword == null || _confirmPassword.isEmpty) {
+      throw "Confirm Password can't be empty";
+    }
+    return _confirmPassword;
   }
-
 }

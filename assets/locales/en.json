@@ -48,5 +48,11 @@
     "order" : "Order",
     "logout_successfully" : "Logged out Successfully",
     "signup_successfully" : "Sign up Successfully",
-    "login_successfully" : "Logged in Successfully"
+    "login_successfully" : "Logged in Successfully",
+    "try_again" : "Try Again",
+    "add_to_favorites" : "Add To Favorites",
+    "product_added_to_favorites" : "Product is added to favorites",
+    "remove_from_favorites" : "Remove from favorites",
+    "product_removed_from_favorites" : "Product is removed from favorites",
+    "there_is_no_favorites_yet" : "There is no favorites yet"
 } 

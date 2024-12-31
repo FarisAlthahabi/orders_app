@@ -48,5 +48,11 @@
     "order" : "طلب",
     "logout_successfully" : "تم تسجيل الخروج بنجاح",
     "signup_successfully" : "تم إنشاء الحساب بنجاح",
-    "login_successfully" : "تم تسجيل الدخول بنجاح"
+    "login_successfully" : "تم تسجيل الدخول بنجاح",
+    "try_again" : "أعد المحاولة",
+    "add_to_favorites" : "إضافة إلى المفضلة",
+    "product_added_to_favorites" : "نم إضافة المنتج إلى المفضلة",
+    "remove_from_favorites" : "إزالة من المفضلة",
+    "product_removed_from_favorites" : "تم إزالة المنتج من المفضلة",
+    "there_is_no_favorites_yet" : "لا يوجد منتجات مفضلة إلى الأن"
 }

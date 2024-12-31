@@ -48,7 +48,7 @@ class _MainButtonState extends State<MainButton> {
       duration: widget.duration ?? AppConstants.duration200ms,
       onPressed: widget.onPressed,
       child: Container(
-        constraints: BoxConstraints(maxHeight: 70),
+        //constraints: BoxConstraints(maxHeight: 80),
         height: widget.height,
         width: widget.width ?? double.maxFinite,
         padding: widget.padding ?? AppConstants.padding20,

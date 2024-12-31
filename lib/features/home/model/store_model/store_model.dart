@@ -1,18 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+part 'store_model.g.dart';
+
+@JsonSerializable()
 @immutable
 class StoreModel {
   const StoreModel({
     required this.id,
     required this.name,
-    required this.image,
     required this.location,
+    required this.category,
+    this.photo,
   });
 
   final int id;
+
   final String name;
-  final String image;
+
   final String location;
+
+  final String category;
+
+  final String? photo;
+
+  factory StoreModel.fromJson(Map<String, dynamic> json) =>
+      _$StoreModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StoreModelToJson(this);
 }
 
 abstract class Stores {
@@ -21,8 +36,9 @@ abstract class Stores {
     (index) => StoreModel(
       id: index,
       name: "Store Name ${index + 1}",
-      image: "",
+      photo: "",
       location: "Damascus ,syria",
+      category: 'category',
     ),
   );
 }

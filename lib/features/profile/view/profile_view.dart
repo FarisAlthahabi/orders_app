@@ -2,12 +2,17 @@ import 'package:animated_size_and_fade/animated_size_and_fade.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orders_app/features/profile/cubit/profile_cubit.dart';
 import 'package:orders_app/features/profile/view/widgets/choose_image_source_widget.dart';
+import 'package:orders_app/global/di/di.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
+import 'package:orders_app/global/widgets/loading_indicator.dart';
 import 'package:orders_app/global/widgets/main_button.dart';
+import 'package:orders_app/global/widgets/main_error_widget.dart';
 import 'package:orders_app/global/widgets/main_show_bottom_sheet.dart';
 import 'package:orders_app/global/widgets/main_text_field.dart';
 
@@ -39,6 +44,8 @@ abstract class ProfileViewCallBacks {
   void onApplyTap();
 
   void onCancelTap();
+
+  void onTryAgainTap();
 }
 
 @RoutePage()
@@ -47,7 +54,10 @@ class ProfileView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ProfilePage();
+    return BlocProvider(
+      create: (context) => get<ProfileCubit>(),
+      child: const ProfilePage(),
+    );
   }
 }
 
@@ -60,6 +70,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage>
     implements ProfileViewCallBacks {
+  late final ProfileCubit profileCubit = context.read();
+
   final firstNameFocusNode = FocusNode();
   final lastNameFocusNode = FocusNode();
   final phoneNumberFocusNode = FocusNode();
@@ -68,12 +80,18 @@ class _ProfilePageState extends State<ProfilePage>
   bool isReadOnly = true;
 
   @override
+  void initState() {
+    super.initState();
+    profileCubit.getProfile();
+  }
+
+  @override
   void dispose() {
     firstNameFocusNode.dispose();
     lastNameFocusNode.dispose();
     phoneNumberFocusNode.dispose();
     locationFocusNode.dispose();
-    
+
     super.dispose();
   }
 
@@ -170,82 +188,119 @@ class _ProfilePageState extends State<ProfilePage>
   }
 
   @override
+  void onTryAgainTap() {
+    profileCubit.getProfile();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: AppConstants.padding16,
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Bounce(
-                onPressed: onImageTap,
-                duration: AppConstants.duration200ms,
-                child: Center(
-                  child: SizedBox(
-                    height: 150,
-                    width: 150,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: AppColors.greyShade,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(Icons.person_2_outlined, size: 120),
-                    ),
+          child: BlocBuilder<ProfileCubit, GeneralProfileState>(
+            builder: (context, state) {
+              if (state is ProfileLoading) {
+                return Padding(
+                  padding: AppConstants.paddingT265,
+                  child: LoadingIndicator(
+                    color: AppColors.black,
                   ),
-                ),
-              ),
-              SizedBox(height: 60),
-              MainTextField(
-                onChanged: onFirstNameChanged,
-                onSubmitted: onFirstNameSubmitted,
-                focusNode: firstNameFocusNode,
-                hintText: "first_name".tr(),
-                readOnly: isReadOnly,
-                prefixIcon: Icon(Icons.person),
-              ),
-              SizedBox(height: 30),
-              MainTextField(
-                onChanged: onLastNameChanged,
-                onSubmitted: onLastNameSubmitted,
-                focusNode: lastNameFocusNode,
-                hintText: "last_name".tr(),
-                readOnly: isReadOnly,
-                prefixIcon: Icon(Icons.person),
-              ),
-              SizedBox(height: 30),
-              MainTextField(
-                onChanged: onPhoneNumberChanged,
-                onSubmitted: onPhoneNumberSubmitted,
-                focusNode: phoneNumberFocusNode,
-                hintText: "phone_number".tr(),
-                readOnly: isReadOnly,
-                prefixIcon: Icon(Icons.phone),
-              ),
-              SizedBox(height: 30),
-              MainTextField(
-                onChanged: onLocationChanged,
-                onSubmitted: onLocationSubmitted,
-                focusNode: locationFocusNode,
-                hintText: "location".tr(),
-                readOnly: isReadOnly,
-                prefixIcon: Icon(Icons.place),
-              ),
-              SizedBox(height: 30),
-              AnimatedSizeAndFade.showHide(
-                show: isReadOnly,
-                child: Row(
+                );
+              } else if (state is ProfileSuccess) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    IconButton(
-                      onPressed: onEditTap,
-                      icon: Icon(Icons.edit),
-                      iconSize: 40,
+                    Bounce(
+                      onPressed: onImageTap,
+                      duration: AppConstants.duration200ms,
+                      child: Center(
+                        child: SizedBox(
+                          height: 150,
+                          width: 150,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: AppColors.greyShade,
+                              shape: BoxShape.circle,
+                              image:state.customer.photo != null ? DecorationImage(
+                                image: AssetImage(
+                                  state.customer.photo!,
+                                ),
+                              ) : null,
+                            ),
+                            child: state.customer.photo == null
+                                ? Icon(Icons.person_2_outlined, size: 120)
+                                : null,
+                          ),
+                        ),
+                      ),
                     ),
-                    Text("Edit Profile"),
+                    SizedBox(height: 60),
+                    MainTextField(
+                      initialText: state.customer.firstName,
+                      onChanged: onFirstNameChanged,
+                      onSubmitted: onFirstNameSubmitted,
+                      focusNode: firstNameFocusNode,
+                      hintText: "first_name".tr(),
+                      readOnly: isReadOnly,
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    SizedBox(height: 30),
+                    MainTextField(
+                      initialText: state.customer.lastName,
+                      onChanged: onLastNameChanged,
+                      onSubmitted: onLastNameSubmitted,
+                      focusNode: lastNameFocusNode,
+                      hintText: "last_name".tr(),
+                      readOnly: isReadOnly,
+                      prefixIcon: Icon(Icons.person),
+                    ),
+                    SizedBox(height: 30),
+                    MainTextField(
+                      initialText: state.customer.phoneNumber,
+                      onChanged: onPhoneNumberChanged,
+                      onSubmitted: onPhoneNumberSubmitted,
+                      focusNode: phoneNumberFocusNode,
+                      hintText: "phone_number".tr(),
+                      readOnly: isReadOnly,
+                      prefixIcon: Icon(Icons.phone),
+                    ),
+                    SizedBox(height: 30),
+                    MainTextField(
+                      initialText: state.customer.location,
+                      onChanged: onLocationChanged,
+                      onSubmitted: onLocationSubmitted,
+                      focusNode: locationFocusNode,
+                      hintText: "location".tr(),
+                      readOnly: isReadOnly,
+                      prefixIcon: Icon(Icons.place),
+                    ),
+                    SizedBox(height: 30),
+                    AnimatedSizeAndFade.showHide(
+                      show: isReadOnly,
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: onEditTap,
+                            icon: Icon(Icons.edit),
+                            iconSize: 40,
+                          ),
+                          Text("Edit Profile"),
+                        ],
+                      ),
+                    )
                   ],
-                ),
-              )
-            ],
+                );
+              } else if (state is ProfileFail) {
+                return MainErrorWidget(
+                  message: state.messsage,
+                  onTap: onTryAgainTap,
+                  height: 265,
+                );
+              } else {
+                return SizedBox.shrink();
+              }
+            },
           ),
         ),
       ),
@@ -260,6 +315,7 @@ class _ProfilePageState extends State<ProfilePage>
             children: [
               MainButton(
                 width: 120,
+                height: 70,
                 onPressed: onCancelTap,
                 text: "cancel".tr(),
                 textColor: AppColors.mainColor,
@@ -269,6 +325,7 @@ class _ProfilePageState extends State<ProfilePage>
               SizedBox(width: 10),
               MainButton(
                 width: 120,
+                height: 70,
                 onPressed: onApplyTap,
                 text: "apply".tr(),
               ),

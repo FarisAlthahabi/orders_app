@@ -11,8 +11,8 @@ class CustomerModel {
     required this.firstName,
     required this.lastName,
     required this.phoneNumber,
-    required this.createdAt,
-    required this.updatedAt,
+    this.location,
+    this.photo,
   });
 
   final int id;
@@ -26,11 +26,9 @@ class CustomerModel {
   @JsonKey(name: "phone")
   final String phoneNumber;
 
-  @JsonKey(name: "created_at")
-  final DateTime createdAt;
+  final String? location;
 
-  @JsonKey(name: "updated_at")
-  final DateTime updatedAt;
+  final String? photo;
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) =>
       _$CustomerModelFromJson(json);

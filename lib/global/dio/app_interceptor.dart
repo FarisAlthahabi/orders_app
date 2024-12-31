@@ -14,18 +14,10 @@ class AppInterceptor extends Interceptor {
     options.headers['Accept'] = 'application/json';
 
     final userRepo = get<UserRepo>();
-    String? token;
-    try {
-      token = await userRepo.getKey(UserRepo.keys.token);
-    } on Exception catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
 
-    if (token != null) {
-      options.headers['Authorization'] = 'Bearer $token';
-      debugPrint('Bearer $token');
+    if (userRepo.isSignedIn) {
+      options.headers['Authorization'] = 'Bearer ${userRepo.token}';
+      debugPrint('Bearer ${userRepo.token}');
     }
 
     return handler.next(options);

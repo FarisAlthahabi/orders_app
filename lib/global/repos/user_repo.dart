@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -8,7 +9,29 @@ class UserRepo {
     return _instance;
   }
 
+  String? _token;
+
+  String? get token => _token;
+
   UserRepo._() : properties = <String, dynamic>{};
+
+  @PostConstruct(preResolve: true)
+  Future<void> init() async {
+    await getUser();
+  }
+
+  Future<String?> getUser() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      _token = prefs.getString(UserKeys().token);
+      return _token;
+    } catch (e, stackTrace) {
+      debugPrint('Error: $e');
+      debugPrint(stackTrace.toString());
+      throw Exception("Can't get the user");
+    }
+  }
 
   static const UserKeys keys = UserKeys();
 
@@ -72,6 +95,10 @@ class UserRepo {
       }
       return properties[key] as T;
     }
+  }
+
+  bool get isSignedIn {
+    return _token != null;
   }
 
   Future<bool> removeKey(String key) async {

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/app_manager/cubit/app_manager_cubit.dart';
+import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:orders_app/global/di/di.dart';
 
 @RoutePage()
@@ -10,8 +11,15 @@ class AppManagerView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => get<AppManagerCubit>(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => get<AppManagerCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => get<FavoriteCubit>(),
+        ),
+      ],
       child: const AppManagerPage(),
     );
   }

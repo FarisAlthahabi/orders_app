@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bounce/flutter_bounce.dart';
+import 'package:orders_app/features/home/model/store_model/store_model.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
 
@@ -7,21 +8,17 @@ class StoreTile extends StatelessWidget {
   const StoreTile({
     super.key,
     required this.onPressed,
-    required this.name,
-    required this.location,
-    required this.image,
+    required this.store,
   });
 
-  final ValueSetter<String> onPressed;
-  final String image;
-  final String name;
-  final String location;
+  final Function(String, int) onPressed;
+  final StoreModel store;
 
   @override
   Widget build(BuildContext context) {
     return Bounce(
       duration: AppConstants.duration200ms,
-      onPressed: () => onPressed(name),
+      onPressed: () => onPressed(store.name , store.id),
       child: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: Container(
@@ -41,17 +38,16 @@ class StoreTile extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.grey.withOpacity(0.4),
                       shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.production_quantity_limits,
-                      size: 60,
+                      image: DecorationImage(
+                        image: AssetImage(store.photo ?? ""),
+                      ),
                     ),
                   ),
                 ),
               ),
               SizedBox(height: 20),
               Text(
-                name,
+                store.name,
                 style: TextStyle(
                   color: AppColors.blackShade2,
                   fontSize: 24,
@@ -59,9 +55,19 @@ class StoreTile extends StatelessWidget {
                   height: 1.22,
                 ),
               ),
-              SizedBox(height: 5),
+              SizedBox(height: 2),
               Text(
-                location,
+                store.category,
+                style: TextStyle(
+                  color: AppColors.grey,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                  height: 1.22,
+                ),
+              ),
+              SizedBox(height: 15),
+              Text(
+                store.location,
                 style: TextStyle(
                   color: AppColors.orange,
                   fontSize: 14,

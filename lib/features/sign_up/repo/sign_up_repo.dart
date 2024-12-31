@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart';
-import 'package:orders_app/features/select_role/model/user_role_enum/user_role_enum.dart';
 import 'package:orders_app/features/sign_up/model/sign_in_model/sign_in_model.dart';
 import 'package:orders_app/features/sign_up/model/sign_in_post_model/sign_in_post_model.dart';
 import 'package:orders_app/features/sign_up/model/sign_up_model/sign_up_model.dart';

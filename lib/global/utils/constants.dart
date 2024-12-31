@@ -10,6 +10,7 @@ abstract class AppConstants {
     topRight: Radius.circular(25),
   );
 
+  static const duration10s = Duration(seconds: 10);
   static const duration2s = Duration(seconds: 2);
   static const duration1s = Duration(seconds: 1);
   static const duration200ms = Duration(milliseconds: 200);
@@ -27,4 +28,5 @@ abstract class AppConstants {
   static const paddingB16 = EdgeInsets.only(bottom: 16);
   static const padding20 = EdgeInsets.all(20);
   static const paddingT120 = EdgeInsets.only(top: 120);
+  static const paddingT265 = EdgeInsets.only(top: 265);
 }

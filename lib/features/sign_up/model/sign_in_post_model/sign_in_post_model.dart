@@ -33,10 +33,16 @@ class SignInPostModel {
 
   @JsonKey(name: "phone")
   String get phoneNumber {
-    return _phoneNumber ?? (throw "Phone Number can't be empty");
+    if (_phoneNumber == null || _phoneNumber.isEmpty) {
+      throw "Phone Number can't be empty";
+    }
+    return _phoneNumber;
   }
 
   String get password {
-    return _password ?? (throw "Password can't be empty");
+    if (_password == null || _password.isEmpty) {
+      throw "Password can't be empty";
+    }
+    return _password;
   }
 }

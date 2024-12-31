@@ -4,9 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
 import 'package:orders_app/global/dio/app_interceptor.dart';
+import 'package:orders_app/global/utils/constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-//TODO : fill this 
 const baseUrl = 'http://10.0.2.2:8000/';
 const apiUrl = '${baseUrl}api/';
 
@@ -19,6 +19,9 @@ class DioClient {
   DioClient._() {
     final baseOptions = BaseOptions(
       baseUrl: apiUrl,
+      receiveTimeout: AppConstants.duration10s,
+      connectTimeout: AppConstants.duration10s,
+      sendTimeout: AppConstants.duration10s,
     );
 
     _dio = Dio(baseOptions);
