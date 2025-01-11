@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:orders_app/global/utils/json_utils.dart';
 
 part 'store_model.g.dart';
 
@@ -22,6 +23,10 @@ class StoreModel {
 
   final String category;
 
+  @JsonKey(
+    fromJson: JsonUtils.setFileUrlFromJson,
+    readValue: JsonUtils.readValue,
+  )
   final String? photo;
 
   factory StoreModel.fromJson(Map<String, dynamic> json) =>
@@ -30,15 +35,3 @@ class StoreModel {
   Map<String, dynamic> toJson() => _$StoreModelToJson(this);
 }
 
-abstract class Stores {
-  static final localStores = List.generate(
-    8,
-    (index) => StoreModel(
-      id: index,
-      name: "Store Name ${index + 1}",
-      photo: "",
-      location: "Damascus ,syria",
-      category: 'category',
-    ),
-  );
-}

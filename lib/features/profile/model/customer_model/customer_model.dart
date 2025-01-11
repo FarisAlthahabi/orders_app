@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:orders_app/global/utils/json_utils.dart';
 
 part 'customer_model.g.dart';
 
@@ -28,6 +29,10 @@ class CustomerModel {
 
   final String? location;
 
+  @JsonKey(
+    fromJson: JsonUtils.setFileUrlFromJson,
+    readValue: JsonUtils.readValue,
+  )
   final String? photo;
 
   factory CustomerModel.fromJson(Map<String, dynamic> json) =>

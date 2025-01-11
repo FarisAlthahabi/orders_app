@@ -27,10 +27,8 @@ class ProductsRepoImp implements ProductsRepo {
     String input,
   ) async {
     try {
-      final response = await dioClient.get(
-        "product/search_name/$storeId",
-        data: {"search" : input}
-      );
+      final response = await dioClient
+          .get("product/search_name/$storeId", data: {"search": input});
       final products = response.data["data"] as List;
       return List.generate(
         products.length,

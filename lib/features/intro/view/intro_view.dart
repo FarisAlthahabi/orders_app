@@ -114,7 +114,7 @@ class _IntroPageState extends State<IntroPage> implements IntroViewCallBacks {
                   ),
                 ),
               ),
-              SizedBox(height: 80),
+              SizedBox(height: 40),
               Text(
                 "next".tr(),
                 style: TextStyle(

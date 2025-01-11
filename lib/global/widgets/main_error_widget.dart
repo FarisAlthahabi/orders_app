@@ -10,15 +10,18 @@ class MainErrorWidget extends StatelessWidget {
     required this.message,
     this.onTap,
     this.height,
+    this.isEmpty,
   });
 
   final String message;
   final VoidCallback? onTap;
+  final bool? isEmpty;
   final double? height;
 
   @override
   Widget build(BuildContext context) {
     final onTap = this.onTap;
+    final isEmpty = this.isEmpty;
     return Center(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,9 +47,9 @@ class MainErrorWidget extends StatelessWidget {
                 duration: AppConstants.duration200ms,
                 onPressed: onTap,
                 child: Text(
-                  "try_again".tr(),
+                  isEmpty == null ? "try_again".tr() : "refresh".tr(),
                   style: TextStyle(
-                    color: AppColors.red,
+                    color:isEmpty == null ? AppColors.red : AppColors.black,
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
                   ),

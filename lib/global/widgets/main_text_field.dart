@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
+import 'package:orders_app/global/utils/constants.dart';
 
 class MainTextField extends StatefulWidget {
   const MainTextField({
@@ -17,6 +18,7 @@ class MainTextField extends StatefulWidget {
     this.prefixIcon,
     this.prefixIconColor,
     this.errorText,
+    this.padding,
   });
 
   final String? hintText;
@@ -31,6 +33,7 @@ class MainTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final Color? prefixIconColor;
   final String? errorText;
+  final EdgeInsets? padding;
 
   @override
   State<MainTextField> createState() => _MainTextFieldState();
@@ -53,7 +56,7 @@ class _MainTextFieldState extends State<MainTextField> {
       decoration: InputDecoration(
         errorStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         errorText: widget.errorText,
-        contentPadding: EdgeInsets.all(20),
+        contentPadding: widget.padding ?? AppConstants.padding20,
         border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide(color: AppColors.grey.withOpacity(0.5))),

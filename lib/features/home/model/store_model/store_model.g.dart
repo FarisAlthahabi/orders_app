@@ -11,7 +11,8 @@ StoreModel _$StoreModelFromJson(Map<String, dynamic> json) => StoreModel(
       name: json['name'] as String,
       location: json['location'] as String,
       category: json['category'] as String,
-      photo: json['photo'] as String?,
+      photo: JsonUtils.setFileUrlFromJson(
+          JsonUtils.readValue(json, 'photo') as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$StoreModelToJson(StoreModel instance) =>

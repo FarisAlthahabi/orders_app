@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_redundant_argument_values
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +7,9 @@ import 'package:orders_app/global/dio/app_interceptor.dart';
 import 'package:orders_app/global/utils/constants.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
-const baseUrl = 'http://10.0.2.2:8000/';
-const apiUrl = '${baseUrl}api/';
+final baseUrl =
+    Platform.isAndroid ? 'http://10.0.2.2:8000/' : 'http://127.0.0.1:8000/';
+final apiUrl = '${baseUrl}api/';
 
 @singleton
 class DioClient {
@@ -19,9 +20,9 @@ class DioClient {
   DioClient._() {
     final baseOptions = BaseOptions(
       baseUrl: apiUrl,
-      receiveTimeout: AppConstants.duration10s,
-      connectTimeout: AppConstants.duration10s,
-      sendTimeout: AppConstants.duration10s,
+      receiveTimeout: AppConstants.duration15s,
+      connectTimeout: AppConstants.duration15s,
+      sendTimeout: AppConstants.duration15s,
     );
 
     _dio = Dio(baseOptions);

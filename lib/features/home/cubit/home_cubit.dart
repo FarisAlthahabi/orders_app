@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:orders_app/features/home/model/store_model/store_model.dart';
@@ -14,18 +15,12 @@ class HomeCubit extends Cubit<GeneralHomeState> {
 
   final HomeRepo homeRepo;
 
-  //String _searchInput = "";
-
-  // void setSearchInput(String searchInput) {
-  //   _searchInput = searchInput;
-  // }
-
   Future<void> getStores() async {
     emit(HomeLoading());
-    final stores = await homeRepo.getStores();
     try {
+      final stores = await homeRepo.getStores();
       if (stores.isEmpty) {
-        emit(HomeEmpty("There is no stores"));
+        emit(HomeEmpty("there_is_no_stores".tr()));
       } else {
         emit(HomeSuccess(stores));
       }
@@ -40,7 +35,7 @@ class HomeCubit extends Cubit<GeneralHomeState> {
     try {
       final stores = await homeRepo.getSearchedStores(input);
       if (stores.isEmpty) {
-        emit(HomeEmpty("There is no stores"));
+        emit(HomeEmpty("there_is_no_stores".tr()));
       } else {
         emit(HomeSuccess(stores));
       }

@@ -3,12 +3,14 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/app_manager/cubit/app_manager_cubit.dart';
+import 'package:orders_app/features/cart/cubit/orders_cubit.dart';
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
 import 'package:orders_app/global/widgets/loading_indicator.dart';
 import 'package:orders_app/global/widgets/main_bottom_sheet.dart';
+import 'package:orders_app/global/widgets/main_button.dart';
 import 'package:orders_app/global/widgets/main_error_widget.dart';
 import 'package:orders_app/global/widgets/main_show_bottom_sheet.dart';
 import 'package:orders_app/global/widgets/main_snack_bar.dart';
@@ -22,6 +24,12 @@ abstract class FavoriteViewCallBacks {
   void onProductLongPress(int productId);
 
   void onRemoveFromFavorites(int productId);
+
+  void addOrderItem(int productId, int count);
+
+  void onMainAction();
+
+  void onCancelTap();
 
   void onTryAgainTap();
 }
@@ -46,6 +54,12 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage>
     implements FavoriteViewCallBacks {
   late final FavoriteCubit favoriteCubit = context.read();
+  late final OrdersCubit ordersCubit = context.read();
+
+  bool isCollecting = false;
+
+  bool isProductsSuccess = false;
+
   @override
   void initState() {
     favoriteCubit.getFavorites();
@@ -57,7 +71,7 @@ class _FavoritePageState extends State<FavoritePage>
     context.router.push(ProductDetailsRoute(productId: productId));
   }
 
-   @override
+  @override
   void onProductLongPress(int productId) {
     mainShowBottomSheet(
       context,
@@ -110,6 +124,28 @@ class _FavoritePageState extends State<FavoritePage>
   }
 
   @override
+  void addOrderItem(int productId, int count) {
+    ordersCubit.addOrderItem(productId, count);
+  }
+
+  @override
+  void onMainAction() {
+    if (isCollecting) {
+      ordersCubit.orderProducts(false);
+    }
+    setState(() {
+      isCollecting = !isCollecting;
+    });
+  }
+
+  @override
+  void onCancelTap() {
+    setState(() {
+      isCollecting = false;
+    });
+  }
+
+  @override
   void onRemoveFromFavorites(int productId) {
     favoriteCubit.removeFromFavorites(productId);
   }
@@ -126,14 +162,31 @@ class _FavoritePageState extends State<FavoritePage>
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AppManagerCubit, AppManagerState>(
-      listener: (context, state) {
-        if (state is FavoriteAdded) {
-          favoriteCubit.addFavorite(state.product);
-        } else if (state is FavoriteRemoved) {
-          favoriteCubit.removeFavorite(state.product);
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AppManagerCubit, AppManagerState>(
+          listener: (context, state) {
+            if (state is FavoriteAdded) {
+              favoriteCubit.addFavorite(state.product);
+            } else if (state is FavoriteRemoved) {
+              favoriteCubit.removeFavorite(state.product);
+            }
+          },
+        ),
+        BlocListener<FavoriteCubit, GeneralFavoriteState>(
+          listener: (context, state) {
+            if (state is FavoriteSuccess) {
+              setState(() {
+                isProductsSuccess = true;
+              });
+            } else if (state is FavoriteFail || state is FavoriteEmpty) {
+              setState(() {
+                isProductsSuccess = false;
+              });
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: AppConstants.padding16,
@@ -144,50 +197,139 @@ class _FavoritePageState extends State<FavoritePage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 30),
-                    Expanded(
-                      child: BlocBuilder<FavoriteCubit, GeneralFavoriteState>(
-                        buildWhen: (previous, current) =>
-                            current is FavoriteState,
-                        builder: (context, state) {
-                          if (state is FavoriteLoading) {
-                            return LoadingIndicator(
-                              color: AppColors.black,
-                            );
-                          } else if (state is FavoriteSuccess) {
-                            return ListView.separated(
+                    SizedBox(height: 10),
+                    Text(
+                      "favorite_products".tr(),
+                      style: TextStyle(
+                        color: AppColors.black,
+                        fontSize: 26,
+                        fontWeight: FontWeight.w600,
+                        height: 1.22,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    BlocBuilder<FavoriteCubit, GeneralFavoriteState>(
+                      buildWhen: (previous, current) =>
+                          current is FavoriteState,
+                      builder: (context, state) {
+                        if (state is FavoriteLoading) {
+                          return Column(
+                            children: [
+                              SizedBox(
+                                height: MediaQuery.sizeOf(context).height / 3,
+                              ),
+                              LoadingIndicator(
+                                color: AppColors.black,
+                              ),
+                            ],
+                          );
+                        } else if (state is FavoriteSuccess) {
+                          return Expanded(
+                            child: ListView.separated(
                               itemCount: state.products.length,
                               itemBuilder: (context, index) {
                                 final product = state.products[index];
-                                return ProductTile(
-                                  index: index,
-                                  product: product,
-                                  isCollecting: false,
-                                  onProduct: onProduct,
-                                  onLongPress: onProductLongPress,
+                                return Column(
+                                  children: [
+                                    ProductTile(
+                                      index: index,
+                                      product: product,
+                                      isCollecting: isCollecting,
+                                      onProduct: onProduct,
+                                      onLongPress: onProductLongPress,
+                                      addOrderitem: addOrderItem,
+                                    ),
+                                    if (index == state.products.length - 1)
+                                      SizedBox(height: 100),
+                                  ],
                                 );
                               },
                               separatorBuilder: (context, index) {
                                 return SizedBox(height: 20);
                               },
-                            );
-                          } else if (state is FavoriteEmpty) {
-                            return MainErrorWidget(message: state.message);
-                          } else if (state is FavoriteFail) {
-                            return MainErrorWidget(
-                              message: state.message,
-                              onTap: onTryAgainTap,
-                            );
-                          } else {
-                            return SizedBox.shrink();
-                          }
-                        },
-                      ),
+                            ),
+                          );
+                        } else if (state is FavoriteEmpty) {
+                          return MainErrorWidget(
+                            message: state.message,
+                            isEmpty: true,
+                            onTap: onTryAgainTap,
+                          );
+                        } else if (state is FavoriteFail) {
+                          return MainErrorWidget(
+                            message: state.message,
+                            onTap: onTryAgainTap,
+                          );
+                        } else {
+                          return SizedBox.shrink();
+                        }
+                      },
                     ),
-                    SizedBox(height: 100),
                   ],
                 ),
               ),
+              if (isProductsSuccess)
+                Align(
+                  alignment: AlignmentDirectional.bottomEnd,
+                  child: Padding(
+                    padding: AppConstants.paddingB16,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Expanded(
+                          flex: 4,
+                          child: SizedBox(),
+                        ),
+                        if (isCollecting)
+                          MainButton(
+                            height: 70,
+                            width: 130,
+                            onPressed: onCancelTap,
+                            text: "cancel".tr(),
+                            textColor: AppColors.mainColor,
+                            buttonColor: AppColors.white,
+                            border: Border.all(
+                                color: AppColors.mainColor, width: 1.5),
+                          ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          flex: 6,
+                          child: BlocConsumer<OrdersCubit, GeneralOrdersState>(
+                            listener: (context, state) {
+                              if (state is CreateOrderSuccess &&
+                                  !state.isProductsPage) {
+                                MainSnackBar.showSuccessMessage(
+                                    context, state.message);
+                              } else if (state is CreateOrderFail &&
+                                  !state.isProductsPage) {
+                                MainSnackBar.showErrorMessage(
+                                    context, state.message);
+                              }
+                            },
+                            builder: (context, state) {
+                              Widget? child;
+                              var onTap = onMainAction;
+                              if (state is CreateOrderLoading) {
+                                child = LoadingIndicator();
+                                onTap = () {};
+                              }
+                              return MainButton(
+                                height: 70,
+                                onPressed: onTap,
+                                text: isCollecting
+                                    ? "order".tr()
+                                    : "collect_products".tr(),
+                                child: child,
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(width: 10),
+                      ],
+                    ),
+                  ),
+                ),
             ],
           ),
         ),

@@ -13,7 +13,8 @@ CustomerModel _$CustomerModelFromJson(Map<String, dynamic> json) =>
       lastName: json['last_name'] as String,
       phoneNumber: json['phone'] as String,
       location: json['location'] as String?,
-      photo: json['photo'] as String?,
+      photo: JsonUtils.setFileUrlFromJson(
+          JsonUtils.readValue(json, 'photo') as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CustomerModelToJson(CustomerModel instance) =>

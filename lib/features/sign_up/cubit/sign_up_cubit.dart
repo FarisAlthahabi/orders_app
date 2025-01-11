@@ -58,7 +58,7 @@ class SignUpCubit extends Cubit<GeneralSignUpState> {
     emit(SignUpLoading());
     try {
       final response = await signUpRepo.signIn(_signInPostModel);
-      userRepo.setKey(UserRepo.keys.token, response.token);
+      await userRepo.setKey(UserRepo.keys.token, response.token);
 
       emit(SignInSuccess("login_successfully".tr()));
     } catch (e) {

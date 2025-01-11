@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/app_manager/cubit/app_manager_cubit.dart';
+import 'package:orders_app/features/cart/cubit/orders_cubit.dart';
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:orders_app/features/products/cubit/products_cubit.dart';
 import 'package:orders_app/global/di/di.dart';
@@ -26,13 +27,15 @@ abstract class ProductsViewCallBacks {
 
   void onProductTap(int productId);
 
+  void addOrderItem(int productId, int count);
+
   void onProductLongPress(int productId);
 
   void onMainAction();
 
-  void onAddToFavorite(int productId);
-
   void onCancelTap();
+
+  void onAddToFavorite(int productId);
 
   Future<void> onRefresh();
 
@@ -84,11 +87,14 @@ class _ProductsPageState extends State<ProductsPage>
     implements ProductsViewCallBacks {
   late final AppManagerCubit appManagerCubit = context.read();
   late final ProductsCubit productsCubit = context.read();
+  late final OrdersCubit ordersCubit = context.read();
   late final FavoriteCubit favoriteCubit = context.read();
 
   final searchFocusNode = FocusNode();
 
   bool isCollecting = false;
+
+  bool isProductsSuccess = false;
 
   @override
   void initState() {
@@ -118,6 +124,11 @@ class _ProductsPageState extends State<ProductsPage>
   @override
   void onProductTap(int productId) {
     context.router.push(ProductDetailsRoute(productId: productId));
+  }
+
+  @override
+  void addOrderItem(int productId, int count) {
+    ordersCubit.addOrderItem(productId, count);
   }
 
   @override
@@ -190,6 +201,16 @@ class _ProductsPageState extends State<ProductsPage>
   }
 
   @override
+  void onMainAction() {
+    if (isCollecting) {
+      ordersCubit.orderProducts(true);
+    }
+    setState(() {
+      isCollecting = !isCollecting;
+    });
+  }
+
+  @override
   void onCancelTap() {
     setState(() {
       isCollecting = false;
@@ -197,25 +218,10 @@ class _ProductsPageState extends State<ProductsPage>
   }
 
   @override
-  void onMainAction() {
-    setState(() {
-      isCollecting = !isCollecting;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
-        title: Text(
-          widget.storeName,
-          style: TextStyle(
-            color: AppColors.mainColor,
-            fontSize: 30,
-            fontWeight: FontWeight.w600,
-            height: 1.22,
-          ),
-        ),
+        title: widget.storeName,
         centerTitle: true,
       ),
       body: Padding(
@@ -227,6 +233,7 @@ class _ProductsPageState extends State<ProductsPage>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(height: 10),
                   Text(
                     "available_products".tr(),
                     style: TextStyle(
@@ -245,95 +252,137 @@ class _ProductsPageState extends State<ProductsPage>
                     focusNode: searchFocusNode,
                   ),
                   SizedBox(height: 30),
-                  Expanded(
-                    child: BlocConsumer<ProductsCubit, GeneralProductsState>(
-                      listener: (context, state) {
-                        if (state is AddFavoriteSuccess) {
-                          appManagerCubit.addFavorite(state.product);
-                        } else if (state is RemoveFavoriteSuccess) {
-                          appManagerCubit.removeFavorite(state.product);
-                        }
-                      },
-                      buildWhen: (previous, current) =>
-                          current is ProductsState,
-                      builder: (context, state) {
-                        if (state is ProductsLoading) {
-                          return LoadingIndicator(
-                            color: AppColors.black,
-                          );
-                        } else if (state is ProductsSuccess) {
-                          return ListView.separated(
+                  BlocConsumer<ProductsCubit, GeneralProductsState>(
+                    listener: (context, state) {
+                      if (state is ProductsSuccess) {
+                        setState(() {
+                          isProductsSuccess = true;
+                        });
+                      } else if (state is ProductsFail ||
+                          state is ProductsEmpty) {
+                        setState(() {
+                          isProductsSuccess = false;
+                        });
+                      }
+                      if (state is AddFavoriteSuccess) {
+                        appManagerCubit.addFavorite(state.product);
+                      } else if (state is RemoveFavoriteSuccess) {
+                        appManagerCubit.removeFavorite(state.product);
+                      }
+                    },
+                    buildWhen: (previous, current) => current is ProductsState,
+                    builder: (context, state) {
+                      if (state is ProductsLoading) {
+                        return LoadingIndicator(
+                          color: AppColors.black,
+                        );
+                      } else if (state is ProductsSuccess) {
+                        return Expanded(
+                          child: ListView.separated(
                             itemCount: state.products.length,
                             itemBuilder: (context, index) {
                               final product = state.products[index];
-                              return ProductTile(
-                                index: index,
-                                product: product,
-                                isCollecting: isCollecting,
-                                onProduct: onProductTap,
-                                onLongPress: onProductLongPress,
+                              return Column(
+                                children: [
+                                  ProductTile(
+                                    index: index,
+                                    product: product,
+                                    isCollecting: isCollecting,
+                                    addOrderitem: addOrderItem,
+                                    onProduct: onProductTap,
+                                    onLongPress: onProductLongPress,
+                                  ),
+                                  if (index == state.products.length - 1)
+                                    SizedBox(height: 100),
+                                ],
                               );
                             },
                             separatorBuilder: (context, index) {
                               return SizedBox(height: 20);
                             },
-                          );
-                        } else if (state is ProductsEmpty) {
-                          return MainErrorWidget(message: state.error);
-                        } else if (state is ProductsFail) {
-                          return MainErrorWidget(
-                            message: state.error,
-                            onTap: onTryAgainTap,
-                          );
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      },
-                    ),
+                          ),
+                        );
+                      } else if (state is ProductsEmpty) {
+                        return MainErrorWidget(
+                          message: state.error,
+                          isEmpty: true,
+                          onTap: onTryAgainTap,
+                        );
+                      } else if (state is ProductsFail) {
+                        return MainErrorWidget(
+                          message: state.error,
+                          onTap: onTryAgainTap,
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    },
                   ),
-                  SizedBox(height: 100),
                 ],
               ),
             ),
-            Align(
-              alignment: AlignmentDirectional.bottomEnd,
-              child: Padding(
-                padding: AppConstants.paddingB16,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Expanded(
-                      flex: 4,
-                      child: SizedBox(),
-                    ),
-                    if (isCollecting)
-                      MainButton(
-                        height: 70,
-                        width: 130,
-                        onPressed: onCancelTap,
-                        text: "cancel".tr(),
-                        textColor: AppColors.mainColor,
-                        buttonColor: AppColors.white,
-                        border:
-                            Border.all(color: AppColors.mainColor, width: 1.5),
+            if (isProductsSuccess)
+              Align(
+                alignment: AlignmentDirectional.bottomEnd,
+                child: Padding(
+                  padding: AppConstants.paddingB16,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: SizedBox(),
                       ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      flex: 6,
-                      child: MainButton(
-                        height: 70,
-                        onPressed: onMainAction,
-                        text: isCollecting
-                            ? "order".tr()
-                            : "collect_products".tr(),
+                      if (isCollecting)
+                        MainButton(
+                          height: 70,
+                          width: 130,
+                          onPressed: onCancelTap,
+                          text: "cancel".tr(),
+                          textColor: AppColors.mainColor,
+                          buttonColor: AppColors.white,
+                          border: Border.all(
+                              color: AppColors.mainColor, width: 1.5),
+                        ),
+                      SizedBox(width: 10),
+                      Expanded(
+                        flex: 6,
+                        child: BlocConsumer<OrdersCubit, GeneralOrdersState>(
+                          listener: (context, state) {
+                            if (state is CreateOrderSuccess &&
+                                state.isProductsPage) {
+                              MainSnackBar.showSuccessMessage(
+                                  context, state.message);
+                            } else if (state is CreateOrderFail &&
+                                state.isProductsPage) {
+                              MainSnackBar.showErrorMessage(
+                                  context, state.message);
+                            }
+                          },
+                          builder: (context, state) {
+                            Widget? child;
+                            var onTap = onMainAction;
+                            if (state is CreateOrderLoading) {
+                              child = LoadingIndicator();
+                              onTap = () {};
+                            }
+                            return MainButton(
+                              height: 70,
+                              onPressed: onTap,
+                              text: isCollecting
+                                  ? "order".tr()
+                                  : "collect_products".tr(),
+                              child: child,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(width: 10),
-                  ],
+                      SizedBox(width: 10),
+                    ],
+                  ),
                 ),
               ),
-            ),
           ],
         ),
       ),

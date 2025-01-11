@@ -3,6 +3,7 @@ import 'package:flutter_bounce/flutter_bounce.dart';
 import 'package:orders_app/features/home/model/store_model/store_model.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
+import 'package:orders_app/global/widgets/app_image_widget.dart';
 
 class StoreTile extends StatelessWidget {
   const StoreTile({
@@ -18,7 +19,7 @@ class StoreTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Bounce(
       duration: AppConstants.duration200ms,
-      onPressed: () => onPressed(store.name , store.id),
+      onPressed: () => onPressed(store.name, store.id),
       child: Padding(
         padding: const EdgeInsets.only(top: 10),
         child: Container(
@@ -31,18 +32,11 @@ class StoreTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
-                child: SizedBox(
-                  height: 100,
+                child: AppImageWidget(
                   width: 100,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: AppColors.grey.withOpacity(0.4),
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                        image: AssetImage(store.photo ?? ""),
-                      ),
-                    ),
-                  ),
+                  height: 100,
+                  url: store.photo,
+                  borderRadius: AppConstants.circularBorderRadius,
                 ),
               ),
               SizedBox(height: 20),

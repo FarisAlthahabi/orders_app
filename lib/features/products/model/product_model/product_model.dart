@@ -1,8 +1,8 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:orders_app/global/utils/json_converters/double_converter.dart';
 import 'package:orders_app/global/utils/json_converters/int_converter.dart';
+import 'package:orders_app/global/utils/json_utils.dart';
 
 part 'product_model.g.dart';
 
@@ -11,18 +11,18 @@ part 'product_model.g.dart';
 class ProductModel {
   const ProductModel({
     required this.id,
-    required this.shopId,
-    required this.name,
     required this.quantity,
     required this.price,
-    required this.description,
+    required this.name,
+    this.shopId,
+    this.description,
     this.image,
   });
 
   final int id;
 
   @JsonKey(name: 'shop_id')
-  final int shopId;
+  final int? shopId;
 
   final String name;
 
@@ -32,8 +32,12 @@ class ProductModel {
   @DoubleConverter()
   final double price;
 
-  final String description;
+  final String? description;
 
+  @JsonKey(
+    fromJson: JsonUtils.setFileUrlFromJson,
+    readValue: JsonUtils.readValue,
+  )
   final String? image;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
@@ -48,7 +52,6 @@ class ProductModel {
     int? quantity,
     double? price,
     String? description,
-    bool? isFavorite,
     String? image,
   }) {
     return ProductModel(
@@ -61,19 +64,4 @@ class ProductModel {
       image: image ?? this.image,
     );
   }
-}
-
-abstract class Products {
-  static final localProducts = List.generate(
-    8,
-    (index) => ProductModel(
-      id: index,
-      shopId: 1,
-      name: "Product ${index + 1}",
-      image: "",
-      quantity: index + 1,
-      price: (index + 1) * 1000,
-      description: 'description',
-    ),
-  );
 }

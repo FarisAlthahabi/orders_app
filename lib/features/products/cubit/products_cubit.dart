@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:injectable/injectable.dart';
 import 'package:meta/meta.dart';
 import 'package:orders_app/features/products/model/product_model/product_model.dart';
@@ -24,7 +25,7 @@ class ProductsCubit extends Cubit<GeneralProductsState> {
       products = await productsRepo.getProducts(storeId);
 
       if (products.isEmpty) {
-        emit(ProductsEmpty("There is no products"));
+        emit(ProductsEmpty("no_products".tr()));
       } else {
         emit(ProductsSuccess(products));
       }
@@ -39,7 +40,7 @@ class ProductsCubit extends Cubit<GeneralProductsState> {
       products = await productsRepo.getSearchedProducts(storeId, input);
 
       if (products.isEmpty) {
-        emit(ProductsEmpty("There is no products"));
+        emit(ProductsEmpty("no_products".tr()));
       } else {
         emit(ProductsSuccess(products));
       }
@@ -50,19 +51,5 @@ class ProductsCubit extends Cubit<GeneralProductsState> {
         emit(ProductsFail(e.toString()));
       }
     }
-  }
-
-  void addFavorite(ProductModel product, bool isFavorite) {
-    final editedProduct = product.copyWith(isFavorite: isFavorite);
-    products[product.id] = editedProduct;
-
-    emit(AddFavoriteSuccess(editedProduct));
-  }
-
-  void removeFavorite(ProductModel product, bool isFavorite) {
-    final editedProduct = product.copyWith(isFavorite: isFavorite);
-    products[product.id] = editedProduct;
-
-    emit(RemoveFavoriteSuccess(editedProduct));
   }
 }

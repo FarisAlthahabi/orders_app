@@ -8,12 +8,13 @@ part of 'product_model.dart';
 
 ProductModel _$ProductModelFromJson(Map<String, dynamic> json) => ProductModel(
       id: (json['id'] as num).toInt(),
-      shopId: (json['shop_id'] as num).toInt(),
-      name: json['name'] as String,
       quantity: const IntConverter().fromJson(json['quantity']),
       price: const DoubleConverter().fromJson(json['price'] as String),
-      description: json['description'] as String,
-      image: json['image'] as String?,
+      name: json['name'] as String,
+      shopId: (json['shop_id'] as num?)?.toInt(),
+      description: json['description'] as String?,
+      image: JsonUtils.setFileUrlFromJson(
+          JsonUtils.readValue(json, 'image') as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ProductModelToJson(ProductModel instance) =>

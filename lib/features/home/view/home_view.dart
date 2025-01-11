@@ -103,6 +103,7 @@ class _HomePageState extends State<HomePage> implements HomeViewCallBacks {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height: 10),
               Text(
                 "available_stores".tr(),
                 style: TextStyle(
@@ -147,7 +148,11 @@ class _HomePageState extends State<HomePage> implements HomeViewCallBacks {
                         },
                       );
                     } else if (state is HomeEmpty) {
-                      return MainErrorWidget(message: state.message);
+                      return MainErrorWidget(
+                        message: state.message,
+                        isEmpty: true,
+                        onTap: onTryAgainTap,
+                      );
                     } else if (state is HomeFail) {
                       return MainErrorWidget(
                         message: state.error,
