@@ -1,6 +1,8 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import 'package:orders_app/features/profile/model/customer_model/customer_model.dart';
 import 'package:orders_app/global/utils/json_converters/double_converter.dart';
 
 part 'order_model.g.dart';
@@ -17,6 +19,7 @@ class OrderModel {
     required this.updatedAt,
     this.customerId,
     this.driverId,
+    this.customer,
   });
 
   final int id;
@@ -41,8 +44,34 @@ class OrderModel {
   @JsonKey(name: 'updated_at')
   final DateTime updatedAt;
 
+  final CustomerModel? customer;
+
   factory OrderModel.fromJson(Map<String, dynamic> json) =>
       _$OrderModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrderModelToJson(this);
+
+  OrderModel copyWith({
+    int? id,
+    int? customerId,
+    int? driverId,
+    String? status,
+    String? payment,
+    double? totalPrice,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    CustomerModel? customer,
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      customerId: customerId ?? this.customerId,
+      driverId: driverId ?? this.driverId,
+      status: status ?? this.status,
+      payment: payment ?? this.payment,
+      totalPrice: totalPrice ?? this.totalPrice,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      customer: customer ?? this.customer,
+    );
+  }
 }

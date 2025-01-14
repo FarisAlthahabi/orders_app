@@ -308,14 +308,14 @@ class _SignUpPageState extends State<SignUpPage>
                             context,
                             state.message,
                           );
-                          context.router.popAndPush(AppManagerRoute());
+                          context.router.popAndPush(MainNavigationRoute());
                         } else if (state is SignInSuccess) {
                           userRepo.setKey(UserRepo.keys.isLoggedIn, true);
                           MainSnackBar.showSuccessMessage(
                             context,
                             state.message,
                           );
-                          context.router.push(AppManagerRoute());
+                          context.router.push(MainNavigationRoute());
                         } else if (state is SignUpFail) {
                           MainSnackBar.showErrorMessage(
                             context,

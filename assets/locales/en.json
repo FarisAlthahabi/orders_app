@@ -84,5 +84,13 @@
     "change_quantity_ordered" : "Change Quantity Ordered",
     "quantity" : "Quantity",
     "product_removed_from_order" : "Product is removed from order successfully",
-    "remove_from_order" : "Remove From Order"
+    "remove_from_order" : "Remove From Order",
+    "unknown" : "Unknown",
+    "all_orders" : "All Orders",
+    "orders" : "Orders",
+    "order_added_to_your_orders" : "Order is added to your orders",
+    "book_this_order" : "Book this order",
+    "change_order_status" : "Change order status",
+    "status" : "Status",
+    "payment" : "Payment"
 } 

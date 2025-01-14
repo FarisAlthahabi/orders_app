@@ -13,9 +13,12 @@ class AppInterceptor extends Interceptor {
   ) async {
     options.headers['Accept'] = 'application/json';
 
-    final token = await get<UserRepo>().getKey(UserRepo.keys.token);
+    final token = await get<UserRepo>().getKey(
+      UserRepo.keys.token,
+      defaultValue: '',
+    );
 
-    if (token != null) {
+    if (token.isNotEmpty) {
       options.headers['Authorization'] = 'Bearer $token';
       debugPrint('Bearer $token');
     }

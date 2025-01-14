@@ -16,6 +16,9 @@ OrderModel _$OrderModelFromJson(Map<String, dynamic> json) => OrderModel(
       updatedAt: DateTime.parse(json['updated_at'] as String),
       customerId: (json['customer_id'] as num?)?.toInt(),
       driverId: (json['driver_id'] as num?)?.toInt(),
+      customer: json['customer'] == null
+          ? null
+          : CustomerModel.fromJson(json['customer'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
@@ -28,4 +31,5 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) =>
       'total_price': const DoubleConverter().toJson(instance.totalPrice),
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
+      'customer': instance.customer,
     };

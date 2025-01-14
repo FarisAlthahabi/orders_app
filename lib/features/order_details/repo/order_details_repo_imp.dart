@@ -6,9 +6,10 @@ class OrderDetailsRepoImp implements OrderDetailsRepo {
 
   @override
   Future<List<OrderDetailsModel>> getOrderDetails(int orderId) async {
+    final role = await get<UserRepo>().getKey(UserRepo.keys.userRole);
     try {
       final response = await dioClient.get(
-        "Customer/order/show_one/$orderId",
+        "$role/order/show_one/$orderId",
       );
       final orderProducts = response.data["order"] as List;
       return List.generate(
@@ -29,7 +30,7 @@ class OrderDetailsRepoImp implements OrderDetailsRepo {
   ) async {
     try {
       await dioClient.post(
-          "Customer/order/updateProductQuantityInOrder/$orderId/$productId",
+          "customer/order/updateProductQuantityInOrder/$orderId/$productId",
           data: {
             "quantity": "$quantity",
           });
@@ -42,7 +43,7 @@ class OrderDetailsRepoImp implements OrderDetailsRepo {
   Future<void> removeProductFromOrder(int orderId, int productId) async {
     try {
       await dioClient
-          .get("Customer/order/removeProductFromOrder/$orderId/$productId");
+          .get("customer/order/removeProductFromOrder/$orderId/$productId");
     } catch (e) {
       rethrow;
     }

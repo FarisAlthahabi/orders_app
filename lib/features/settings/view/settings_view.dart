@@ -1,8 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:orders_app/global/localization/cubit/localization_cubit.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
 import 'package:orders_app/global/widgets/main_app_bar.dart';
@@ -31,8 +29,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage>
     implements SettingsViewCallBacks {
-  late final LocalizationCubit localizationCubit = context.read();
-
   late bool isEnglish = context.locale == Locale('en');
   
   @override
@@ -40,10 +36,8 @@ class _SettingsPageState extends State<SettingsPage>
     setState(() {
       if (context.locale == Locale('en')) {
         context.setLocale(Locale('ar'));
-        //localizationCubit.setLocale(Locale('ar'));
       } else {
         context.setLocale(Locale('en'));
-        //localizationCubit.setLocale(Locale('ar'));
       }
       isEnglish = value;
     });

@@ -12,6 +12,8 @@ part 'states/create_order_state.dart';
 
 part 'states/cancel_order_state.dart';
 
+part 'states/add_to_driver_orders_state.dart';
+
 part 'states/general_orders_state.dart';
 
 @injectable
@@ -20,7 +22,9 @@ class OrdersCubit extends Cubit<GeneralOrdersState> {
 
   final OrderRepo orderRepo;
 
-  List<OrderModel> localOrders = [];
+  List<OrderModel> localCustomerOrders = [];
+
+  List<OrderModel> localDriverOrders = [];
 
   List<OrderItemModel> orderItems = [];
 
@@ -49,11 +53,15 @@ class OrdersCubit extends Cubit<GeneralOrdersState> {
     }
   }
 
-  Future<void> getOrders() async {
+  Future<void> getOrders({required bool isAll}) async {
     emit(OrdersLoading());
     try {
-      final orders = await orderRepo.getOrders();
-      localOrders = orders;
+      final orders = await orderRepo.getOrders(isAll: isAll);
+      if (isAll) {
+        localCustomerOrders = orders;
+      } else {
+        localDriverOrders = orders;
+      }
 
       if (orders.isEmpty) {
         emit(OrdersEmpty("there_is_no_orders".tr()));
@@ -69,16 +77,16 @@ class OrdersCubit extends Cubit<GeneralOrdersState> {
     emit(CancelOrderLoading());
     try {
       await orderRepo.cancelOrder(orderId);
-      localOrders.removeWhere(
+      localCustomerOrders.removeWhere(
         (order) => order.id == orderId,
       );
 
       emit(CancelOrderSuccess("order_canceled".tr()));
 
-      if (localOrders.isEmpty) {
+      if (localCustomerOrders.isEmpty) {
         emit(OrdersEmpty("there_is_no_orders".tr()));
       } else {
-        emit(OrdersSuccess(localOrders));
+        emit(OrdersSuccess(localCustomerOrders));
       }
     } catch (e) {
       emit(CancelOrderFail(e.toString()));
@@ -87,17 +95,34 @@ class OrdersCubit extends Cubit<GeneralOrdersState> {
 
   Future<void> orderProducts(bool isProductsPage) async {
     if (orderItems.isEmpty) {
-      emit(CreateOrderFail("did_not_collect_any_product".tr(),isProductsPage));
+      emit(CreateOrderFail("did_not_collect_any_product".tr(), isProductsPage));
       return;
     }
     emit(CreateOrderLoading(isProductsPage));
     try {
       await orderRepo.orderProducts(orderItems);
-      emit(CreateOrderSuccess("order_created".tr(),isProductsPage));
+      emit(CreateOrderSuccess("order_created".tr(), isProductsPage));
       orderItems = [];
     } catch (e) {
-      emit(CreateOrderFail(e.toString(),isProductsPage));
+      emit(CreateOrderFail(e.toString(), isProductsPage));
       orderItems = [];
+    }
+  }
+
+  Future<void> addToDriverOrders(int orderId) async {
+    emit(AddToDriverOrdersLoading());
+    try {
+      await orderRepo.addToDriverOrders(orderId);
+
+      emit(AddToDriverOrdersSuccess("order_added_to_your_orders".tr()));
+
+      if (localCustomerOrders.isEmpty) {
+        emit(OrdersEmpty("there_is_no_orders".tr()));
+      } else {
+        emit(OrdersSuccess(localCustomerOrders));
+      }
+    } catch (e) {
+      emit(AddToDriverOrdersFail(e.toString()));
     }
   }
 }

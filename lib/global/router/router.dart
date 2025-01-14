@@ -21,25 +21,49 @@ class AppRouter extends RootStackRouter {
         ),
         AutoRoute(page: SignUpRoute.page),
         AdaptiveRoute(
-          page: AppManagerRoute.page,
+          page: MainNavigationRoute.page,
           children: [
-            AutoRoute(
-              initial: true,
-              page: DashboardRoute.page,
+            AdaptiveRoute(
+              page: AppManagerRoute.page,
               children: [
                 AutoRoute(
                   initial: true,
-                  page: HomeRoute.page,
+                  page: DashboardRoute.page,
+                  children: [
+                    AutoRoute(
+                      initial: true,
+                      page: HomeRoute.page,
+                    ),
+                    AutoRoute(page: CartRoute.page),
+                    AutoRoute(page: FavoriteRoute.page),
+                    AutoRoute(page: ProfileRoute.page)
+                  ],
                 ),
-                AutoRoute(page: CartRoute.page),
-                AutoRoute(page: FavoriteRoute.page),
-                AutoRoute(page: ProfileRoute.page)
+                AutoRoute(page: ProductsRoute.page),
+                AutoRoute(page: ProductDetailsRoute.page),
+                AutoRoute(page: SettingsRoute.page),
+                AutoRoute(page: OrderDetailsRoute.page),
               ],
             ),
-            AutoRoute(page: ProductsRoute.page),
-            AutoRoute(page: ProductDetailsRoute.page),
-            AutoRoute(page: SettingsRoute.page),
-            AutoRoute(page: OrderDetailsRoute.page),
+            AdaptiveRoute(
+              page: DriverAppManagerRoute.page,
+              children: [
+                AutoRoute(
+                  initial: true,
+                  page: DriverDashboardRoute.page,
+                  children: [
+                    AutoRoute(
+                      initial: true,
+                      page: CartRoute.page,
+                    ),
+                    AutoRoute(page: DriverOrdersRoute.page),
+                  ],
+                ),
+                AutoRoute(page: OrderDetailsRoute.page),
+                AutoRoute(page: ProductDetailsRoute.page),
+                AutoRoute(page: SettingsRoute.page),
+              ],
+            ),
           ],
         ),
       ];

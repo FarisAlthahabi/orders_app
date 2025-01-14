@@ -84,5 +84,13 @@
     "change_quantity_ordered" : "تغيير الكمية المطلوبة",
     "quantity" : "الكمية",
     "product_removed_from_order" : "تم إزالة المنتج من الطلبية بنجاح",
-    "remove_from_order" : "إزالة من الطلبية"
+    "remove_from_order" : "إزالة من الطلبية",
+    "unknown" : "غير معروف",
+    "all_orders" : "كل الطلبات",
+    "orders" : "الطلبات",
+    "order_added_to_your_orders" : "تم إضافة الطلب إلى طلبياتك",
+    "change_order_status" : "تغيير حالة الطلب",
+    "status" : "حالة الطلب",
+    "payment" : "حالة الدفع",
+    "book_this_order" : "حجز هذا الطلب"
 }

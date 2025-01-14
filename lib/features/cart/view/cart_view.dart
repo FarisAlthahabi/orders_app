@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:orders_app/features/cart/cubit/orders_cubit.dart';
+import 'package:orders_app/features/cart/model/order_model/order_model.dart';
 import 'package:orders_app/global/router/router.gr.dart';
 import 'package:orders_app/global/theme/components/colors.dart';
 import 'package:orders_app/global/utils/constants.dart';
@@ -14,11 +15,13 @@ import 'package:orders_app/global/widgets/main_snack_bar.dart';
 import 'package:orders_app/global/widgets/order_tile.dart';
 
 abstract class CartViewCallbacks {
-  void onOrderLongPress(int orderId);
+  void onOrderLongPress(OrderModel order);
 
   void onOrderTap(int orderId);
 
   void onCancelOrder(int orderId);
+
+  void onBookThisOrder(int orderId);
 
   Future<void> onRefresh();
 
@@ -48,7 +51,7 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
   @override
   void initState() {
     super.initState();
-    ordersCubit.getOrders();
+    ordersCubit.getOrders(isAll: true);
   }
 
   @override
@@ -57,52 +60,104 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
   }
 
   @override
-  void onOrderLongPress(int orderId) {
+  void onBookThisOrder(int orderId) {
+    ordersCubit.addToDriverOrders(orderId);
+  }
+
+  @override
+  void onOrderLongPress(OrderModel order) {
     mainShowBottomSheet(
       context,
       widget: MainBottomSheet(
         title: "orders_options".tr(),
         children: [
-          TextButton(
-            onPressed: () => onCancelOrder(orderId),
-            child: Row(
-              children: [
-                Text(
-                  "cancel_order".tr(),
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 20,
-                    height: 1.22,
+          if (order.customer == null)
+            TextButton(
+              onPressed: () => onCancelOrder(order.id),
+              child: Row(
+                children: [
+                  Text(
+                    "cancel_order".tr(),
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                      height: 1.22,
+                    ),
                   ),
-                ),
-                SizedBox(width: 18),
-                BlocConsumer<OrdersCubit, GeneralOrdersState>(
-                  listener: (context, state) {
-                    if (state is CancelOrderSuccess) {
-                      MainSnackBar.showSuccessMessage(
-                        context,
-                        state.message,
+                  SizedBox(width: 18),
+                  BlocConsumer<OrdersCubit, GeneralOrdersState>(
+                    listener: (context, state) {
+                      if (state is CancelOrderSuccess) {
+                        MainSnackBar.showSuccessMessage(
+                          context,
+                          state.message,
+                        );
+                        context.maybePop();
+                      } else if (state is CancelOrderFail) {
+                        MainSnackBar.showErrorMessage(context, state.error);
+                      }
+                    },
+                    builder: (context, state) {
+                      Widget child = Icon(
+                        Icons.delete,
+                        color: AppColors.grey,
                       );
-                      context.maybePop();
-                    } else if (state is CancelOrderFail) {
-                      MainSnackBar.showErrorMessage(context, state.error);
-                    }
-                  },
-                  builder: (context, state) {
-                    Widget child = Icon(
-                      Icons.delete,
-                      color: AppColors.grey,
-                    );
-                    if (state is CancelOrderLoading) {
-                      child = LoadingIndicator();
-                    }
-                    return child;
-                  },
-                )
-              ],
+                      if (state is CancelOrderLoading) {
+                        child = LoadingIndicator();
+                      }
+                      return child;
+                    },
+                  )
+                ],
+              ),
             ),
-          ),
+          if (order.customer != null)
+            TextButton(
+              onPressed: () => onBookThisOrder(order.id),
+              child: Row(
+                children: [
+                  Text(
+                    "book_this_order".tr(),
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w400,
+                      fontSize: 20,
+                      height: 1.22,
+                    ),
+                  ),
+                  SizedBox(width: 18),
+                  BlocConsumer<OrdersCubit, GeneralOrdersState>(
+                    listener: (context, state) {
+                      if (state is AddToDriverOrdersSuccess) {
+                        context.maybePop();
+                        MainSnackBar.showSuccessMessage(
+                          context,
+                          state.message,
+                        );
+                        context.maybePop();
+                      } else if (state is AddToDriverOrdersFail) {
+                        context.maybePop();
+                        MainSnackBar.showErrorMessage(
+                          context,
+                          state.error,
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      Widget child = Icon(
+                        Icons.calendar_today,
+                        color: AppColors.grey,
+                      );
+                      if (state is AddToDriverOrdersLoading) {
+                        child = LoadingIndicator();
+                      }
+                      return child;
+                    },
+                  )
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -115,12 +170,12 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
 
   @override
   Future<void> onRefresh() async {
-    ordersCubit.getOrders();
+    ordersCubit.getOrders(isAll: true);
   }
 
   @override
   void onTryAgainTap() {
-    ordersCubit.getOrders();
+    ordersCubit.getOrders(isAll: true);
   }
 
   @override
@@ -136,7 +191,7 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
               children: [
                 SizedBox(height: 10),
                 Text(
-                  "my_orders".tr(),
+                  "all_orders".tr(),
                   style: TextStyle(
                     color: AppColors.black,
                     fontSize: 26,
@@ -165,10 +220,10 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
                           final order = state.orders[index];
 
                           return OrderTile(
-                            order: order,
-                            onOrderTap: onOrderTap,
-                            onOrderLongPress: onOrderLongPress,
-                          );
+                              order: order,
+                              index: index,
+                              onOrderTap: onOrderTap,
+                              onOrderLongPress: onOrderLongPress);
                         },
                         separatorBuilder: (context, index) {
                           return SizedBox(height: 16);

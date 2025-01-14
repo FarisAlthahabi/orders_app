@@ -16,11 +16,17 @@ import 'package:orders_app/features/cart/cubit/orders_cubit.dart' as _i289;
 import 'package:orders_app/features/cart/repo/order_repo.dart' as _i706;
 import 'package:orders_app/features/dashboard/cubit/dashboard_cubit.dart'
     as _i318;
+import 'package:orders_app/features/driver_orders/cubit/driver_order_cubit.dart'
+    as _i245;
+import 'package:orders_app/features/driver_orders/repo/driver_orders_repo.dart'
+    as _i508;
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart'
     as _i303;
 import 'package:orders_app/features/favorite/repo/favorite_repo.dart' as _i0;
 import 'package:orders_app/features/home/cubit/home_cubit.dart' as _i615;
 import 'package:orders_app/features/home/repo/home_repo.dart' as _i680;
+import 'package:orders_app/features/main_navigation/cubit/main_navigation_cubit.dart'
+    as _i289;
 import 'package:orders_app/features/order_details/cubit/order_details_cubit.dart'
     as _i769;
 import 'package:orders_app/features/order_details/repo/order_details_repo.dart'
@@ -65,6 +71,8 @@ extension GetItInjectableX on _i174.GetIt {
       },
       preResolve: true,
     );
+    gh.factory<_i289.MainNavigationCubit>(
+        () => _i289.MainNavigationCubit(gh<_i614.UserRepo>()));
     gh.factory<_i288.ProfileRepo>(() => _i288.ProfileRepoImp());
     gh.factory<_i128.SignUpRepo>(() => _i128.SignUpRepoImp());
     gh.factory<_i1053.OrderDetailsRepo>(() => _i1053.OrderDetailsRepoImp());
@@ -72,7 +80,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i654.ProductDetailsRepo>(() => _i654.ProductDetailsRepoImp());
     gh.factory<_i680.HomeRepo>(() => _i680.HomeRepoImp());
     gh.factory<_i707.ProductsRepo>(() => _i707.ProductsRepoImp());
+    gh.factory<_i508.DriverOrdersRepo>(() => _i508.DriverOrdersRepoImp());
     gh.factory<_i706.OrderRepo>(() => _i706.OrderRepoImp());
+    gh.factory<_i245.DriverOrderCubit>(() => _i245.DriverOrderCubit(
+          gh<_i706.OrderRepo>(),
+          gh<_i508.DriverOrdersRepo>(),
+        ));
     gh.factory<_i289.OrdersCubit>(
         () => _i289.OrdersCubit(gh<_i706.OrderRepo>()));
     gh.factory<_i318.DashboardCubit>(
