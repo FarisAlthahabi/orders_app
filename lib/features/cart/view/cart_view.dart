@@ -17,7 +17,7 @@ import 'package:orders_app/global/widgets/order_tile.dart';
 abstract class CartViewCallbacks {
   void onOrderLongPress(OrderModel order);
 
-  void onOrderTap(int orderId);
+  void onOrderTap(OrderModel order);
 
   void onCancelOrder(int orderId);
 
@@ -164,8 +164,8 @@ class _CartPageState extends State<CartPage> implements CartViewCallbacks {
   }
 
   @override
-  void onOrderTap(int orderId) {
-    context.router.push(OrderDetailsRoute(orderId: orderId));
+  void onOrderTap(OrderModel order) {
+    context.router.push(OrderDetailsRoute(order: order));
   }
 
   @override

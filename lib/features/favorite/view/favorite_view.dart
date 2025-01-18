@@ -250,15 +250,23 @@ class _FavoritePageState extends State<FavoritePage>
                             ),
                           );
                         } else if (state is FavoriteEmpty) {
-                          return MainErrorWidget(
-                            message: state.message,
-                            isEmpty: true,
-                            onTap: onTryAgainTap,
+                          return Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.sizeOf(context).height / 3),
+                            child: MainErrorWidget(
+                              message: state.message,
+                              isEmpty: true,
+                              onTap: onTryAgainTap,
+                            ),
                           );
                         } else if (state is FavoriteFail) {
-                          return MainErrorWidget(
-                            message: state.message,
-                            onTap: onTryAgainTap,
+                          return Padding(
+                            padding: EdgeInsets.only(
+                                top: MediaQuery.sizeOf(context).height / 3),
+                            child: MainErrorWidget(
+                              message: state.message,
+                              onTap: onTryAgainTap,
+                            ),
                           );
                         } else {
                           return SizedBox.shrink();

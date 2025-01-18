@@ -308,7 +308,7 @@ class _SignUpPageState extends State<SignUpPage>
                             context,
                             state.message,
                           );
-                          context.router.popAndPush(MainNavigationRoute());
+                          onShowSignUpOrIn();
                         } else if (state is SignInSuccess) {
                           userRepo.setKey(UserRepo.keys.isLoggedIn, true);
                           MainSnackBar.showSuccessMessage(

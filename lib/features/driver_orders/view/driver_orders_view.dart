@@ -16,7 +16,7 @@ import 'package:orders_app/global/widgets/main_text_field.dart';
 import 'package:orders_app/global/widgets/order_tile.dart';
 
 abstract class DriverOrdersViewCallBacks {
-  void onOrderTap(int orderId);
+  void onOrderTap(OrderModel order);
 
   void onOrderLongPress(OrderModel order);
 
@@ -69,8 +69,8 @@ class _DriverOrdersPageState extends State<DriverOrdersPage>
   }
 
   @override
-  void onOrderTap(int orderId) {
-    context.router.push(OrderDetailsRoute(orderId: orderId));
+  void onOrderTap(OrderModel order) {
+    context.router.push(OrderDetailsRoute(order: order));
   }
 
   @override
@@ -285,7 +285,6 @@ class _DriverOrdersPageState extends State<DriverOrdersPage>
                         itemCount: state.orders.length,
                         itemBuilder: (context, index) {
                           final order = state.orders[index];
-
                           return OrderTile(
                               order: order,
                               index: index,

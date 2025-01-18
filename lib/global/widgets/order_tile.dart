@@ -19,7 +19,7 @@ class OrderTile extends StatefulWidget {
   final OrderModel order;
   final int index;
   final ValueSetter<OrderModel> onOrderLongPress;
-  final ValueSetter<int> onOrderTap;
+  final ValueSetter<OrderModel> onOrderTap;
 
   @override
   State<OrderTile> createState() => _OrderTileState();
@@ -32,7 +32,7 @@ class _OrderTileState extends State<OrderTile> {
 
     return InkWell(
       onLongPress: () => widget.onOrderLongPress(widget.order),
-      onTap: () => widget.onOrderTap(widget.order.id),
+      onTap: () => widget.onOrderTap(widget.order),
       child: Card(
         child: Container(
           padding: AppConstants.padding16,

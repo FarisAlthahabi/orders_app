@@ -3,6 +3,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:orders_app/features/cart/model/order_model/order_model.dart';
 import 'package:orders_app/features/favorite/cubit/favorite_cubit.dart';
 import 'package:orders_app/features/order_details/cubit/order_details_cubit.dart';
 import 'package:orders_app/global/router/router.gr.dart';
@@ -45,24 +46,24 @@ abstract class OrderDetailsViewCallBacks {
 class OrderDetailsView extends StatelessWidget {
   const OrderDetailsView({
     super.key,
-    required this.orderId,
+    required this.order,
   });
 
-  final int orderId;
+  final OrderModel order;
 
   @override
   Widget build(BuildContext context) {
-    return OrderDetailsPage(orderId: orderId);
+    return OrderDetailsPage(order: order);
   }
 }
 
 class OrderDetailsPage extends StatefulWidget {
   const OrderDetailsPage({
     super.key,
-    required this.orderId,
+    required this.order,
   });
 
-  final int orderId;
+  final OrderModel order;
 
   @override
   State<OrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -78,7 +79,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
   @override
   void initState() {
     super.initState();
-    orderDetailsCubit.getOrderDetails(widget.orderId);
+    orderDetailsCubit.getOrderDetails(widget.order.id);
   }
 
   @override
@@ -94,7 +95,8 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
   @override
   void onProductLongPress(int productId) {
-    mainShowBottomSheet(
+    if(widget.order.customer == null){
+      mainShowBottomSheet(
       context,
       widget: MainBottomSheet(
         title: "product_options".tr(),
@@ -209,6 +211,7 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
         ],
       ),
     );
+    }
   }
 
   @override
@@ -218,12 +221,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
   @override
   void onApplyUpdateProductQuantityTap(int productId) {
-    orderDetailsCubit.updateProductQuantityInOrder(widget.orderId, productId);
+    orderDetailsCubit.updateProductQuantityInOrder(widget.order.id, productId);
   }
 
   @override
   void onRemoveFromOrderTap(int productId) {
-    orderDetailsCubit.removeProductFromOrder(widget.orderId, productId);
+    orderDetailsCubit.removeProductFromOrder(widget.order.id, productId);
   }
 
   @override
@@ -331,12 +334,12 @@ class _OrderDetailsPageState extends State<OrderDetailsPage>
 
   @override
   Future<void> onRefresh() async {
-    orderDetailsCubit.getOrderDetails(widget.orderId);
+    orderDetailsCubit.getOrderDetails(widget.order.id);
   }
 
   @override
   void onTryAgainTap() {
-    orderDetailsCubit.getOrderDetails(widget.orderId);
+    orderDetailsCubit.getOrderDetails(widget.order.id);
   }
 
   @override

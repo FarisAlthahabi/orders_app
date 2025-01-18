@@ -69,7 +69,11 @@ class OrdersCubit extends Cubit<GeneralOrdersState> {
         emit(OrdersSuccess(orders));
       }
     } catch (e) {
-      emit(OrdersFail(e.toString()));
+      if (e.toString().contains("could not be found")) {
+        emit(OrdersEmpty("there_is_no_orders".tr()));
+      } else {
+        emit(OrdersFail(e.toString()));
+      }
     }
   }
 

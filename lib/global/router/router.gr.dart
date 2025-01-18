@@ -12,6 +12,8 @@ import 'package:auto_route/auto_route.dart' as _i20;
 import 'package:flutter/material.dart' as _i21;
 import 'package:orders_app/features/app_manager/view/app_manager_view.dart'
     as _i1;
+import 'package:orders_app/features/cart/model/order_model/order_model.dart'
+    as _i22;
 import 'package:orders_app/features/cart/view/cart_view.dart' as _i2;
 import 'package:orders_app/features/dashboard/view/dashboard_view.dart' as _i3;
 import 'package:orders_app/features/driver_app_manager/view/driver_app_manager_view.dart'
@@ -252,13 +254,13 @@ class MainNavigationRoute extends _i20.PageRouteInfo<void> {
 class OrderDetailsRoute extends _i20.PageRouteInfo<OrderDetailsRouteArgs> {
   OrderDetailsRoute({
     _i21.Key? key,
-    required int orderId,
+    required _i22.OrderModel order,
     List<_i20.PageRouteInfo>? children,
   }) : super(
           OrderDetailsRoute.name,
           args: OrderDetailsRouteArgs(
             key: key,
-            orderId: orderId,
+            order: order,
           ),
           initialChildren: children,
         );
@@ -271,7 +273,7 @@ class OrderDetailsRoute extends _i20.PageRouteInfo<OrderDetailsRouteArgs> {
       final args = data.argsAs<OrderDetailsRouteArgs>();
       return _i12.OrderDetailsView(
         key: args.key,
-        orderId: args.orderId,
+        order: args.order,
       );
     },
   );
@@ -280,16 +282,16 @@ class OrderDetailsRoute extends _i20.PageRouteInfo<OrderDetailsRouteArgs> {
 class OrderDetailsRouteArgs {
   const OrderDetailsRouteArgs({
     this.key,
-    required this.orderId,
+    required this.order,
   });
 
   final _i21.Key? key;
 
-  final int orderId;
+  final _i22.OrderModel order;
 
   @override
   String toString() {
-    return 'OrderDetailsRouteArgs{key: $key, orderId: $orderId}';
+    return 'OrderDetailsRouteArgs{key: $key, order: $order}';
   }
 }
 
